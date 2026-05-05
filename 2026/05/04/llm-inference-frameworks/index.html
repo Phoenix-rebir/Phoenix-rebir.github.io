@@ -27,7 +27,7 @@
 <meta property="og:description" content="训练好的大模型如何高效部署？本文对比三个主流推理框架的原理与适用场景。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-05-04T05:00:00.000Z">
-<meta property="article:modified_time" content="2026-05-05T08:52:34.272Z">
+<meta property="article:modified_time" content="2026-05-05T09:01:01.679Z">
 <meta property="article:author" content="tandy">
 <meta property="article:tag" content="大模型">
 <meta property="article:tag" content="推理框架">
@@ -333,7 +333,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          1.9k 字
+          1.8k 字
         
       </span>
     
@@ -399,31 +399,24 @@
                 
                 <p>训练好的大模型如何高效部署？本文对比三个主流推理框架的原理与适用场景。</p>
 <span id="more"></span>
-
 <h2 id="1-推理的核心挑战"><a href="#1-推理的核心挑战" class="headerlink" title="1. 推理的核心挑战"></a>1. 推理的核心挑战</h2><p>大模型推理面临两个主要瓶颈：</p>
-<p><strong>内存瓶颈：</strong> KV Cache 随序列长度线性增长</p>
-<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc">KV Cache 大小 = 2 × 层数 × 头数 × 头维度 × 序列长度 × batch_size × 精度字节数<br>LLaMA-2 70B，序列长度 4096，batch=1，FP16：<br><span class="hljs-section">= 2 × 80 × 64 × 128 × 4096 × 1 × 2 ≈ 10.7 GB</span><br></code></pre></td></tr></table></figure>
-
+<p><strong>内存瓶颈：</strong> KV Cache 随序列长度线性增长<br><figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc">KV Cache 大小 = 2 × 层数 × 头数 × 头维度 × 序列长度 × batch_size × 精度字节数<br>LLaMA-2 70B，序列长度 4096，batch=1，FP16：<br><span class="hljs-section">= 2 × 80 × 64 × 128 × 4096 × 1 × 2 ≈ 10.7 GB</span><br></code></pre></td></tr></table></figure></p>
 <p><strong>计算瓶颈：</strong> 自回归解码每次只生成一个 token，GPU 利用率极低（通常 &lt; 30%）</p>
 <hr>
 <h2 id="2-vLLM：PagedAttention-革命"><a href="#2-vLLM：PagedAttention-革命" class="headerlink" title="2. vLLM：PagedAttention 革命"></a>2. vLLM：PagedAttention 革命</h2><h3 id="2-1-核心创新：PagedAttention"><a href="#2-1-核心创新：PagedAttention" class="headerlink" title="2.1 核心创新：PagedAttention"></a>2.1 核心创新：PagedAttention</h3><p>vLLM 借鉴操作系统的<strong>虚拟内存分页</strong>思想管理 KV Cache：</p>
 <figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs inform7">传统方式（连续内存）：<br>请求1: <span class="hljs-comment">[KV1_1]</span><span class="hljs-comment">[KV1_2]</span><span class="hljs-comment">[KV1_3]</span><span class="hljs-comment">[KV1_4]</span><span class="hljs-comment">[  空  ]</span><span class="hljs-comment">[  空  ]</span>  ← 预分配，浪费<br>请求2: <span class="hljs-comment">[KV2_1]</span><span class="hljs-comment">[KV2_2]</span><span class="hljs-comment">[  空  ]</span><span class="hljs-comment">[  空  ]</span><span class="hljs-comment">[  空  ]</span><span class="hljs-comment">[  空  ]</span>  ← 碎片化<br><br>PagedAttention（分页）：<br>物理块:  <span class="hljs-comment">[Block0]</span> <span class="hljs-comment">[Block1]</span> <span class="hljs-comment">[Block2]</span> <span class="hljs-comment">[Block3]</span> <span class="hljs-comment">[Block4]</span><br>请求1 →  Block0   Block2   Block4   (按需分配，无碎片)<br>请求2 →  Block1   Block3            (共享前缀块)<br></code></pre></td></tr></table></figure>
-
 <p><strong>效果：</strong> 内存利用率从 20-40% 提升到 90%+，吞吐量提升 2-4 倍。</p>
 <h3 id="2-2-连续批处理（Continuous-Batching）"><a href="#2-2-连续批处理（Continuous-Batching）" class="headerlink" title="2.2 连续批处理（Continuous Batching）"></a>2.2 连续批处理（Continuous Batching）</h3><p>传统批处理等所有请求完成才处理下一批，vLLM 实现迭代级调度：</p>
 <figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">时间步:  <span class="hljs-built_in">t1</span>   <span class="hljs-built_in">t2</span>   <span class="hljs-built_in">t3</span>   <span class="hljs-built_in">t4</span>   <span class="hljs-built_in">t5</span>   <span class="hljs-built_in">t6</span><br>请求A:   生成  生成  生成  完成<br>请求<span class="hljs-keyword">B: </span>  生成  生成  生成  生成  完成<br>请求C:                    加入  生成  生成  ...<br></code></pre></td></tr></table></figure>
-
 <p>新请求可以在任意时间步插入，GPU 始终满负荷运行。</p>
 <h3 id="2-3-适用场景"><a href="#2-3-适用场景" class="headerlink" title="2.3 适用场景"></a>2.3 适用场景</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> vllm <span class="hljs-keyword">import</span> LLM, SamplingParams<br><br>llm = LLM(model=<span class="hljs-string">&quot;meta-llama/Llama-2-7b-chat-hf&quot;</span>)<br>outputs = llm.generate([<span class="hljs-string">&quot;你好，介绍一下自己&quot;</span>], SamplingParams(temperature=<span class="hljs-number">0.8</span>))<br></code></pre></td></tr></table></figure>
-
 <p><strong>适合：</strong> 在线服务、高并发 API、需要最大化吞吐量的场景</p>
 <hr>
 <h2 id="3-TensorRT-LLM：NVIDIA-的极致优化"><a href="#3-TensorRT-LLM：NVIDIA-的极致优化" class="headerlink" title="3. TensorRT-LLM：NVIDIA 的极致优化"></a>3. TensorRT-LLM：NVIDIA 的极致优化</h2><p>TensorRT-LLM 是 NVIDIA 专为其 GPU 优化的推理框架，通过算子融合、量化等手段压榨硬件极限。</p>
-<h3 id="3-1-核心优化技术"><a href="#3-1-核心优化技术" class="headerlink" title="3.1 核心优化技术"></a>3.1 核心优化技术</h3><p><strong>算子融合（Kernel Fusion）：</strong></p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs">原始：LayerNorm → Linear → GELU → Linear（4次 GPU kernel 调用）<br>融合：单个 fused kernel（1次调用，减少内存读写）<br></code></pre></td></tr></table></figure>
-
+<h3 id="3-1-核心优化技术"><a href="#3-1-核心优化技术" class="headerlink" title="3.1 核心优化技术"></a>3.1 核心优化技术</h3><p><strong>算子融合（Kernel Fusion）：</strong><br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs">原始：LayerNorm → Linear → GELU → Linear（4次 GPU kernel 调用）<br>融合：单个 fused kernel（1次调用，减少内存读写）<br></code></pre></td></tr></table></figure></p>
 <p><strong>In-flight Batching：</strong> 类似 vLLM 的连续批处理，但针对 NVIDIA GPU 深度优化。</p>
 <p><strong>量化支持：</strong></p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -433,7 +426,8 @@
 <th>速度提升</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>FP16</td>
 <td>基准</td>
 <td>基准</td>
@@ -457,18 +451,19 @@
 <td>50%</td>
 <td>1.5-2x</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
+</div>
 <p><strong>适合：</strong> NVIDIA GPU 生产环境，追求极致延迟的场景</p>
 <hr>
 <h2 id="4-llama-cpp：CPU-上的大模型"><a href="#4-llama-cpp：CPU-上的大模型" class="headerlink" title="4. llama.cpp：CPU 上的大模型"></a>4. llama.cpp：CPU 上的大模型</h2><p>llama.cpp 用纯 C++ 实现，支持在 CPU（甚至手机）上运行大模型。</p>
 <h3 id="4-1-核心技术：GGUF-量化格式"><a href="#4-1-核心技术：GGUF-量化格式" class="headerlink" title="4.1 核心技术：GGUF 量化格式"></a>4.1 核心技术：GGUF 量化格式</h3><figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc">原始 LLaMA-7B（FP16）：13.5 GB<br>Q8<span class="hljs-emphasis">_0 量化：7.2 GB   （可在 8GB 内存运行）</span><br><span class="hljs-emphasis">Q4_K_M 量化：4.1 GB （可在 6GB 内存运行）</span><br><span class="hljs-emphasis">Q2_</span>K 量化：2.9 GB   （可在 4GB 内存运行）<br></code></pre></td></tr></table></figure>
-
 <p><strong>Q4_K_M 量化原理：</strong> 将 FP16 权重分组，每组用 4bit 整数 + 缩放因子表示，精度损失极小但内存减少 75%。</p>
 <h3 id="4-2-使用示例"><a href="#4-2-使用示例" class="headerlink" title="4.2 使用示例"></a>4.2 使用示例</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 下载模型</span><br>wget https://huggingface.co/TheBloke/Llama-2-7B-GGUF/llama-2-7b.Q4_K_M.gguf<br><br><span class="hljs-comment"># 运行推理</span><br>./llama-cli -m llama-2-7b.Q4_K_M.gguf -p <span class="hljs-string">&quot;解释量子纠缠&quot;</span> -n 200<br></code></pre></td></tr></table></figure>
-
 <p><strong>适合：</strong> 本地部署、边缘设备、无 GPU 环境、隐私敏感场景</p>
 <hr>
-<h2 id="5-三框架横向对比"><a href="#5-三框架横向对比" class="headerlink" title="5. 三框架横向对比"></a>5. 三框架横向对比</h2><table>
+<h2 id="5-三框架横向对比"><a href="#5-三框架横向对比" class="headerlink" title="5. 三框架横向对比"></a>5. 三框架横向对比</h2><div class="table-container">
+<table>
 <thead>
 <tr>
 <th>维度</th>
@@ -477,11 +472,12 @@
 <th>llama.cpp</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>硬件要求</td>
 <td>NVIDIA GPU</td>
 <td>NVIDIA GPU</td>
-<td>CPU&#x2F;GPU 均可</td>
+<td>CPU/GPU 均可</td>
 </tr>
 <tr>
 <td>吞吐量</td>
@@ -503,22 +499,24 @@
 </tr>
 <tr>
 <td>量化支持</td>
-<td>AWQ&#x2F;GPTQ</td>
-<td>INT4&#x2F;INT8&#x2F;FP8</td>
+<td>AWQ/GPTQ</td>
+<td>INT4/INT8/FP8</td>
 <td>GGUF Q2-Q8</td>
 </tr>
 <tr>
 <td>适用场景</td>
 <td>在线服务</td>
 <td>生产极致优化</td>
-<td>本地&#x2F;边缘</td>
+<td>本地/边缘</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
+</div>
 <hr>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
 <li><strong>云端高并发服务</strong> → vLLM（易用 + 高吞吐）</li>
 <li><strong>NVIDIA GPU 生产环境追求极致</strong> → TensorRT-LLM</li>
-<li><strong>本地运行 &#x2F; 无 GPU</strong> → llama.cpp</li>
+<li><strong>本地运行 / 无 GPU</strong> → llama.cpp</li>
 </ul>
 
                 

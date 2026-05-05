@@ -27,7 +27,7 @@
 <meta property="og:description" content="BLIP-2 是 Salesforce 于 2023 年提出的多模态框架，核心创新是用轻量级的 Q-Former 模块，以极低的训练成本将冻结的视觉编码器与冻结的语言大模型连接起来。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-05-04T03:00:00.000Z">
-<meta property="article:modified_time" content="2026-05-05T08:52:34.271Z">
+<meta property="article:modified_time" content="2026-05-05T09:01:01.678Z">
 <meta property="article:author" content="tandy">
 <meta property="article:tag" content="多模态">
 <meta property="article:tag" content="BLIP-2">
@@ -398,7 +398,6 @@
                 
                 <p>BLIP-2 是 Salesforce 于 2023 年提出的多模态框架，核心创新是用轻量级的 Q-Former 模块，以极低的训练成本将冻结的视觉编码器与冻结的语言大模型连接起来。</p>
 <span id="more"></span>
-
 <h2 id="1-核心思想：冻结大模型，只训练桥接模块"><a href="#1-核心思想：冻结大模型，只训练桥接模块" class="headerlink" title="1. 核心思想：冻结大模型，只训练桥接模块"></a>1. 核心思想：冻结大模型，只训练桥接模块</h2><p>训练多模态大模型面临的困境：</p>
 <ul>
 <li>视觉编码器（如 CLIP ViT）已经很强，重新训练代价极高</li>
@@ -407,14 +406,13 @@
 </ul>
 <p>BLIP-2 的解法：<strong>只训练一个轻量的 Q-Former 作为桥梁</strong>，两端的大模型全部冻结。</p>
 <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs css">图片输入<br>   │<br>   ▼<br><span class="hljs-selector-attr">[冻结的 Image Encoder]</span>  ← <span class="hljs-attribute">CLIP</span> ViT-L/<span class="hljs-number">14</span>，不更新参数<br>   │  图像特征 (<span class="hljs-number">257</span> × <span class="hljs-number">1024</span>)<br>   ▼<br><span class="hljs-selector-attr">[Q-Former]</span>  ← 只有 <span class="hljs-number">188</span>M 参数，这是唯一训练的部分<br>   │  查询输出 (<span class="hljs-number">32</span> × <span class="hljs-number">768</span>)<br>   ▼<br><span class="hljs-selector-attr">[线性投影层]</span><br>   │<br>   ▼<br><span class="hljs-selector-attr">[冻结的 LLM]</span>  ← OPT-<span class="hljs-number">6.7</span>B 或 FlanT5-XXL，不更新参数<br>   │<br>   ▼<br>文本输出<br></code></pre></td></tr></table></figure>
-
 <hr>
 <h2 id="2-Q-Former-架构详解"><a href="#2-Q-Former-架构详解" class="headerlink" title="2. Q-Former 架构详解"></a>2. Q-Former 架构详解</h2><p>Q-Former（Querying Transformer）是 BLIP-2 的核心创新。</p>
 <h3 id="2-1-结构"><a href="#2-1-结构" class="headerlink" title="2.1 结构"></a>2.1 结构</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs css">可学习查询向量 <span class="hljs-selector-tag">Q</span> (<span class="hljs-number">32</span>个)<br>        │<br>        ▼<br>┌───────────────────────────────┐<br>│         <span class="hljs-selector-tag">Q</span>-Former              │<br>│                               │<br>│  Self-Attention               │<br>│  (<span class="hljs-selector-tag">Q</span> 与 <span class="hljs-selector-tag">Q</span> 之间交互)             │<br>│         │                     │<br>│  Cross-Attention              │<br>│  (<span class="hljs-selector-tag">Q</span> 与图像特征交互)            │<br>│         │                     │<br>│  FFN                          │<br>└───────────┬───────────────────┘<br>            │<br>            ▼<br>      <span class="hljs-number">32</span> 个输出向量<br>   (压缩了图像的关键信息)<br></code></pre></td></tr></table></figure>
-
 <p><strong>关键设计：</strong> 32 个可学习的查询向量（Query）通过交叉注意力从图像特征中”提问”并提取信息，将 257 个图像 token 压缩为 32 个，大幅降低 LLM 的输入长度。</p>
 <h3 id="2-2-两阶段训练"><a href="#2-2-两阶段训练" class="headerlink" title="2.2 两阶段训练"></a>2.2 两阶段训练</h3><p><strong>第一阶段：视觉-语言表示学习</strong>（配合冻结的 Image Encoder）</p>
 <p>同时优化三个目标：</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -422,7 +420,8 @@
 <th>说明</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>ITC（图文对比）</td>
 <td>对齐图像和文本的全局表示</td>
 </tr>
@@ -434,11 +433,14 @@
 <td>ITG（图文生成）</td>
 <td>根据图像生成对应文字描述</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
+</div>
 <p><strong>第二阶段：视觉到语言的生成学习</strong>（配合冻结的 LLM）</p>
 <p>将 Q-Former 的输出通过线性层投影到 LLM 的词嵌入空间，让 LLM 把图像特征当作”软提示”（soft prompt）来生成文本。</p>
 <hr>
-<h2 id="3-与其他方法的对比"><a href="#3-与其他方法的对比" class="headerlink" title="3. 与其他方法的对比"></a>3. 与其他方法的对比</h2><table>
+<h2 id="3-与其他方法的对比"><a href="#3-与其他方法的对比" class="headerlink" title="3. 与其他方法的对比"></a>3. 与其他方法的对比</h2><div class="table-container">
+<table>
 <thead>
 <tr>
 <th>方法</th>
@@ -447,7 +449,8 @@
 <th>LLM</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>Flamingo</td>
 <td>约 10B</td>
 <td>冻结</td>
@@ -471,15 +474,13 @@
 <td>冻结</td>
 <td>冻结</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
+</div>
 <p>BLIP-2 用不到 2 亿参数的训练量，达到了当时最先进的多模态性能。</p>
 <hr>
-<h2 id="4-能力展示"><a href="#4-能力展示" class="headerlink" title="4. 能力展示"></a>4. 能力展示</h2><p><strong>图像描述（Image Captioning）：</strong></p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs css">输入图片：一只橙色的猫坐在笔记本电脑键盘上<br><span class="hljs-selector-tag">Q</span>-Former 提取：<span class="hljs-selector-attr">[猫的特征]</span> <span class="hljs-selector-attr">[键盘特征]</span> <span class="hljs-selector-attr">[坐姿特征]</span><br>LLM 生成：&quot;<span class="hljs-selector-tag">A</span> cat is sitting on <span class="hljs-selector-tag">a</span> laptop keyboard.&quot;<br></code></pre></td></tr></table></figure>
-
-<p><strong>视觉问答（VQA）：</strong></p>
-<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs 1c">图片：巴黎铁塔夜景<br>问题：<span class="hljs-string">&quot;这座建筑在哪个城市？&quot;</span><br>回答：<span class="hljs-string">&quot;巴黎（Paris），法国。&quot;</span><br></code></pre></td></tr></table></figure>
-
+<h2 id="4-能力展示"><a href="#4-能力展示" class="headerlink" title="4. 能力展示"></a>4. 能力展示</h2><p><strong>图像描述（Image Captioning）：</strong><br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs css">输入图片：一只橙色的猫坐在笔记本电脑键盘上<br><span class="hljs-selector-tag">Q</span>-Former 提取：<span class="hljs-selector-attr">[猫的特征]</span> <span class="hljs-selector-attr">[键盘特征]</span> <span class="hljs-selector-attr">[坐姿特征]</span><br>LLM 生成：&quot;<span class="hljs-selector-tag">A</span> cat is sitting on <span class="hljs-selector-tag">a</span> laptop keyboard.&quot;<br></code></pre></td></tr></table></figure></p>
+<p><strong>视觉问答（VQA）：</strong><br><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs 1c">图片：巴黎铁塔夜景<br>问题：<span class="hljs-string">&quot;这座建筑在哪个城市？&quot;</span><br>回答：<span class="hljs-string">&quot;巴黎（Paris），法国。&quot;</span><br></code></pre></td></tr></table></figure></p>
 <p><strong>零样本图像描述：</strong> 在 NoCaps 数据集上，BLIP-2 以 <strong>188M 可训练参数</strong>超越了需要训练数十亿参数的 Flamingo。</p>
 <hr>
 <h2 id="5-局限性"><a href="#5-局限性" class="headerlink" title="5. 局限性"></a>5. 局限性</h2><ul>
