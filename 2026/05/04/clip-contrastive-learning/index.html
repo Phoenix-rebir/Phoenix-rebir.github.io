@@ -27,7 +27,7 @@
 <meta property="og:description" content="2021 年 OpenAI 发布的 CLIP（Contrastive Language-Image Pre-training）用极其优雅的方式解决了视觉-语言对齐问题，成为多模态领域最重要的基础模型之一。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-05-04T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-05-05T09:14:23.327Z">
+<meta property="article:modified_time" content="2026-05-05T09:24:52.433Z">
 <meta property="article:author" content="tandy">
 <meta property="article:tag" content="多模态">
 <meta property="article:tag" content="CLIP">
@@ -414,7 +414,7 @@
 </ul>
 <p>两个向量被投影到<strong>同一个嵌入空间</strong>，用余弦相似度衡量匹配程度。</p>
 <hr>
-<h2 id="3-对比学习目标函数"><a href="#3-对比学习目标函数" class="headerlink" title="3. 对比学习目标函数"></a>3. 对比学习目标函数</h2><p>给定一个 batch 的 $N$ 个图文对 ${(I<em>i, T_i)}</em>{i=1}^N$：</p>
+<h2 id="3-对比学习目标函数"><a href="#3-对比学习目标函数" class="headerlink" title="3. 对比学习目标函数"></a>3. 对比学习目标函数</h2><p>给定一个 batch 的 $N$ 个图文对 ${(I_i, T_i)}_{i=1}^N$：</p>
 <p><strong>相似度矩阵：</strong></p>
 <script type="math/tex; mode=display">S_{ij} = \frac{f(I_i) \cdot g(T_j)}{|f(I_i)| \cdot |g(T_j)|} \cdot \exp(\tau)</script><p>其中 $\tau$ 是可学习的温度参数，$f$ 和 $g$ 分别是图像和文本编码器。</p>
 <p><strong>损失函数（对称交叉熵）：</strong></p>
