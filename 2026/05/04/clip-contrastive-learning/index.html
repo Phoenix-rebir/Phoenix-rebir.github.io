@@ -19,25 +19,27 @@
   <meta name="author" content="tandy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="欢迎来到 Tandy 的博客！这是第一篇文章。">
+    <meta name="description" content="2021 年 OpenAI 发布的 CLIP（Contrastive Language-Image Pre-training）用极其优雅的方式解决了视觉-语言对齐问题，成为多模态领域最重要的基础模型之一。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="我的第一篇文章">
-<meta property="og:url" content="https://phoenix-rebir.github.io/2026/05/03/hello-world/index.html">
+<meta property="og:title" content="CLIP：用对比学习打通视觉与语言的桥梁">
+<meta property="og:url" content="https://phoenix-rebir.github.io/2026/05/04/clip-contrastive-learning/index.html">
 <meta property="og:site_name" content="Tandy&#39;s Blog">
-<meta property="og:description" content="欢迎来到 Tandy 的博客！这是第一篇文章。">
+<meta property="og:description" content="2021 年 OpenAI 发布的 CLIP（Contrastive Language-Image Pre-training）用极其优雅的方式解决了视觉-语言对齐问题，成为多模态领域最重要的基础模型之一。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-05-03T03:00:00.000Z">
+<meta property="article:published_time" content="2026-05-04T02:00:00.000Z">
 <meta property="article:modified_time" content="2026-05-05T08:47:42.962Z">
 <meta property="article:author" content="tandy">
-<meta property="article:tag" content="博客">
-<meta property="article:tag" content="Hexo">
+<meta property="article:tag" content="多模态">
+<meta property="article:tag" content="CLIP">
+<meta property="article:tag" content="对比学习">
+<meta property="article:tag" content="OpenAI">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>我的第一篇文章 - Tandy&#39;s Blog</title>
+  <title>CLIP：用对比学习打通视觉与语言的桥梁 - Tandy&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -306,7 +308,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="我的第一篇文章"></span>
+            <span id="subtitle" data-typed-text="CLIP：用对比学习打通视觉与语言的桥梁"></span>
           
         </div>
 
@@ -317,8 +319,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-05-03 11:00" pubdate>
-          2026年5月3日 星期日
+        <time datetime="2026-05-04 10:00" pubdate>
+          2026年5月4日 星期一
         </time>
       </span>
     
@@ -330,7 +332,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          44 字
+          1.9k 字
         
       </span>
     
@@ -341,7 +343,7 @@
         
         
         
-          1 分钟
+          17 分钟
         
       </span>
     
@@ -380,7 +382,7 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">我的第一篇文章</h1>
+            <h1 id="seo-header">CLIP：用对比学习打通视觉与语言的桥梁</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
@@ -394,10 +396,89 @@
             
               <div class="markdown-body">
                 
-                <p>欢迎来到 Tandy 的博客！这是第一篇文章。</p>
+                <p>2021 年 OpenAI 发布的 CLIP（Contrastive Language-Image Pre-training）用极其优雅的方式解决了视觉-语言对齐问题，成为多模态领域最重要的基础模型之一。</p>
 <span id="more"></span>
 
-<h2 id="关于本站"><a href="#关于本站" class="headerlink" title="关于本站"></a>关于本站</h2><p>本站使用 <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a> + <a target="_blank" rel="noopener" href="https://github.com/fluid-dev/hexo-theme-fluid">Fluid</a> 主题搭建。</p>
+<h2 id="1-CLIP-解决了什么问题？"><a href="#1-CLIP-解决了什么问题？" class="headerlink" title="1. CLIP 解决了什么问题？"></a>1. CLIP 解决了什么问题？</h2><p>传统视觉模型的训练范式：收集图片 → 人工标注类别 → 有监督分类训练。</p>
+<p>这种方式有两个根本限制：</p>
+<ul>
+<li><strong>标签空间固定</strong>：训练时没见过的类别无法识别</li>
+<li><strong>数据获取昂贵</strong>：人工标注成本极高</li>
+</ul>
+<p>CLIP 的思路：互联网上有海量的<strong>图文对</strong>（图片+描述文字），用这些数据做<strong>对比学习</strong>，让模型自己学会对齐视觉和语言。</p>
+<hr>
+<h2 id="2-架构设计"><a href="#2-架构设计" class="headerlink" title="2. 架构设计"></a>2. 架构设计</h2><figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs abnf">图片输入                    文字输入<br>   │                           │<br>   ▼                           ▼<br>[Image Encoder]           [Text Encoder]<br>(ViT 或 ResNet)            (Transformer)<br>   │                           │<br>   ▼                           ▼<br>图像嵌入向量 I_i          文本嵌入向量 T_j<br>   │                           │<br>   └──────────┬────────────────┘<br>              ▼<br>       余弦相似度矩阵<br>       对角线 <span class="hljs-operator">=</span> 匹配对<br>       非对角线 <span class="hljs-operator">=</span> 不匹配对<br></code></pre></td></tr></table></figure>
+
+<p><strong>两个编码器：</strong></p>
+<ul>
+<li><strong>Image Encoder</strong>：ViT-L&#x2F;14 或 ResNet，将图片编码为固定维度向量</li>
+<li><strong>Text Encoder</strong>：12 层 Transformer，将文字编码为同维度向量</li>
+</ul>
+<p>两个向量被投影到<strong>同一个嵌入空间</strong>，用余弦相似度衡量匹配程度。</p>
+<hr>
+<h2 id="3-对比学习目标函数"><a href="#3-对比学习目标函数" class="headerlink" title="3. 对比学习目标函数"></a>3. 对比学习目标函数</h2><p>给定一个 batch 的 $N$ 个图文对 ${(I_i, T_i)}_{i&#x3D;1}^N$：</p>
+<p><strong>相似度矩阵：</strong></p>
+<p>$$S_{ij} &#x3D; \frac{f(I_i) \cdot g(T_j)}{|f(I_i)| \cdot |g(T_j)|} \cdot \exp(\tau)$$</p>
+<p>其中 $\tau$ 是可学习的温度参数，$f$ 和 $g$ 分别是图像和文本编码器。</p>
+<p><strong>损失函数（对称交叉熵）：</strong></p>
+<p>$$\mathcal{L} &#x3D; \frac{1}{2}\left[\mathcal{L}<em>{\text{image}} + \mathcal{L}</em>{\text{text}}\right]$$</p>
+<p>$$\mathcal{L}<em>{\text{image}} &#x3D; -\frac{1}{N}\sum</em>{i&#x3D;1}^N \log \frac{\exp(S_{ii})}{\sum_{j&#x3D;1}^N \exp(S_{ij})}$$</p>
+<p><strong>直觉理解：</strong></p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">     <span class="hljs-built_in">T1</span>    <span class="hljs-built_in">T2</span>    <span class="hljs-built_in">T3</span>    <span class="hljs-built_in">T4</span><br>I1 [<span class="hljs-number">0</span>.<span class="hljs-number">92</span>  <span class="hljs-number">0</span>.<span class="hljs-number">11</span>  <span class="hljs-number">0</span>.<span class="hljs-number">08</span>  <span class="hljs-number">0</span>.<span class="hljs-number">05</span>]  ← I1 应与 <span class="hljs-built_in">T1</span> 相似度最高<br>I2 [<span class="hljs-number">0</span>.<span class="hljs-number">07</span>  <span class="hljs-number">0</span>.<span class="hljs-number">89</span>  <span class="hljs-number">0</span>.<span class="hljs-number">12</span>  <span class="hljs-number">0</span>.<span class="hljs-number">09</span>]<br>I3 [<span class="hljs-number">0</span>.<span class="hljs-number">06</span>  <span class="hljs-number">0</span>.<span class="hljs-number">10</span>  <span class="hljs-number">0</span>.<span class="hljs-number">91</span>  <span class="hljs-number">0</span>.<span class="hljs-number">07</span>]<br>I4 [<span class="hljs-number">0</span>.<span class="hljs-number">04</span>  <span class="hljs-number">0</span>.<span class="hljs-number">08</span>  <span class="hljs-number">0</span>.<span class="hljs-number">06</span>  <span class="hljs-number">0</span>.<span class="hljs-number">93</span>]<br>     ↑ 对角线最大化，非对角线最小化<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="4-零样本迁移（Zero-shot-Transfer）"><a href="#4-零样本迁移（Zero-shot-Transfer）" class="headerlink" title="4. 零样本迁移（Zero-shot Transfer）"></a>4. 零样本迁移（Zero-shot Transfer）</h2><p>CLIP 最惊艳的能力：<strong>无需任何微调</strong>，直接在新任务上做分类。</p>
+<p><strong>步骤：</strong></p>
+<ol>
+<li>将类别名称转为文本提示：<code>&quot;a photo of a &#123;cat&#125;&quot;</code></li>
+<li>用 Text Encoder 编码所有类别文本</li>
+<li>用 Image Encoder 编码待分类图片</li>
+<li>计算图片与所有类别文本的相似度，取最高者</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 伪代码示意</span><br>labels = [<span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;dog&quot;</span>, <span class="hljs-string">&quot;bird&quot;</span>]<br>text_prompts = [<span class="hljs-string">f&quot;a photo of a <span class="hljs-subst">&#123;l&#125;</span>&quot;</span> <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> labels]<br><br>text_features = clip.encode_text(text_prompts)   <span class="hljs-comment"># (3, 512)</span><br>image_features = clip.encode_image(image)         <span class="hljs-comment"># (1, 512)</span><br><br>similarities = image_features @ text_features.T   <span class="hljs-comment"># (1, 3)</span><br>predicted = labels[similarities.argmax()]<br></code></pre></td></tr></table></figure>
+
+<p><strong>ImageNet 零样本结果：</strong> CLIP 达到 76.2% top-1 准确率，与有监督训练的 ResNet-50 相当，但 CLIP <strong>从未见过 ImageNet 的训练数据</strong>。</p>
+<hr>
+<h2 id="5-训练规模"><a href="#5-训练规模" class="headerlink" title="5. 训练规模"></a>5. 训练规模</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>训练数据</td>
+<td>4 亿图文对（WIT 数据集）</td>
+</tr>
+<tr>
+<td>训练时长</td>
+<td>在 592 个 V100 上训练 18 天</td>
+</tr>
+<tr>
+<td>模型参数</td>
+<td>ViT-L&#x2F;14 版本约 400M</td>
+</tr>
+<tr>
+<td>嵌入维度</td>
+<td>768</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="6-CLIP-的局限与影响"><a href="#6-CLIP-的局限与影响" class="headerlink" title="6. CLIP 的局限与影响"></a>6. CLIP 的局限与影响</h2><p><strong>局限：</strong></p>
+<ul>
+<li>对细粒度识别（如区分不同狗的品种）效果较差</li>
+<li>对抽象概念（如”比昨天更快乐”）理解有限</li>
+<li>计数能力弱</li>
+</ul>
+<p><strong>影响：</strong><br>CLIP 的图像编码器成为众多多模态模型的视觉骨干，包括 DALL-E 2、Stable Diffusion、LLaVA 等。它证明了<strong>大规模弱监督</strong>可以替代精心标注的数据集。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>CLIP 的核心贡献：</p>
+<ol>
+<li>用<strong>对比学习</strong>替代有监督分类，突破标签空间限制</li>
+<li>利用互联网图文对实现<strong>超大规模训练</strong></li>
+<li>实现真正的<strong>零样本迁移</strong>能力</li>
+</ol>
+<p>下一篇介绍在 CLIP 基础上进一步发展的 BLIP-2。</p>
 
                 
               </div>
@@ -416,7 +497,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E9%9A%8F%E7%AC%94/" class="category-chain-item">随笔</a>
+  <a href="/categories/%E5%A4%9A%E6%A8%A1%E6%80%81%E6%A8%A1%E5%9E%8B/" class="category-chain-item">多模态模型</a>
   
   
 
@@ -431,9 +512,13 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E5%8D%9A%E5%AE%A2/" class="print-no-link">#博客</a>
+        <a href="/tags/%E5%A4%9A%E6%A8%A1%E6%80%81/" class="print-no-link">#多模态</a>
       
-        <a href="/tags/Hexo/" class="print-no-link">#Hexo</a>
+        <a href="/tags/CLIP/" class="print-no-link">#CLIP</a>
+      
+        <a href="/tags/%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0/" class="print-no-link">#对比学习</a>
+      
+        <a href="/tags/OpenAI/" class="print-no-link">#OpenAI</a>
       
     </div>
   
@@ -445,8 +530,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>我的第一篇文章</div>
-      <div>https://phoenix-rebir.github.io/2026/05/03/hello-world/</div>
+      <div>CLIP：用对比学习打通视觉与语言的桥梁</div>
+      <div>https://phoenix-rebir.github.io/2026/05/04/clip-contrastive-learning/</div>
     </div>
     <div class="license-meta">
       
@@ -458,7 +543,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年5月3日</div>
+          <div>2026年5月4日</div>
         </div>
       
       
@@ -490,15 +575,21 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/05/04/transformer-architecture/" title="Transformer 架构详解：从自注意力到大模型的基石">
+                      <a href="/2026/05/04/blip2-qformer/" title="BLIP-2：用 Q-Former 桥接视觉与语言大模型">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Transformer 架构详解：从自注意力到大模型的基石</span>
+                        <span class="hidden-mobile">BLIP-2：用 Q-Former 桥接视觉与语言大模型</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
                   </article>
                   <article class="post-next col-6">
                     
+                    
+                      <a href="/2026/05/04/transformer-architecture/" title="Transformer 架构详解：从自注意力到大模型的基石">
+                        <span class="hidden-mobile">Transformer 架构详解：从自注意力到大模型的基石</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
                     
                   </article>
                 </div>

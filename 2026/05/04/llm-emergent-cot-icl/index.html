@@ -19,25 +19,28 @@
   <meta name="author" content="tandy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="欢迎来到 Tandy 的博客！这是第一篇文章。">
+    <meta name="description" content="大模型展现出一系列小模型完全不具备的能力，这些”涌现”现象背后有哪些理论解释？本文梳理三个核心概念。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="我的第一篇文章">
-<meta property="og:url" content="https://phoenix-rebir.github.io/2026/05/03/hello-world/index.html">
+<meta property="og:title" content="大模型经典理论：涌现能力、思维链与 In-Context Learning">
+<meta property="og:url" content="https://phoenix-rebir.github.io/2026/05/04/llm-emergent-cot-icl/index.html">
 <meta property="og:site_name" content="Tandy&#39;s Blog">
-<meta property="og:description" content="欢迎来到 Tandy 的博客！这是第一篇文章。">
+<meta property="og:description" content="大模型展现出一系列小模型完全不具备的能力，这些”涌现”现象背后有哪些理论解释？本文梳理三个核心概念。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-05-03T03:00:00.000Z">
+<meta property="article:published_time" content="2026-05-04T07:00:00.000Z">
 <meta property="article:modified_time" content="2026-05-05T08:47:42.962Z">
 <meta property="article:author" content="tandy">
-<meta property="article:tag" content="博客">
-<meta property="article:tag" content="Hexo">
+<meta property="article:tag" content="大模型">
+<meta property="article:tag" content="涌现能力">
+<meta property="article:tag" content="思维链">
+<meta property="article:tag" content="ICL">
+<meta property="article:tag" content="理论">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>我的第一篇文章 - Tandy&#39;s Blog</title>
+  <title>大模型经典理论：涌现能力、思维链与 In-Context Learning - Tandy&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -306,7 +309,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="我的第一篇文章"></span>
+            <span id="subtitle" data-typed-text="大模型经典理论：涌现能力、思维链与 In-Context Learning"></span>
           
         </div>
 
@@ -317,8 +320,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-05-03 11:00" pubdate>
-          2026年5月3日 星期日
+        <time datetime="2026-05-04 15:00" pubdate>
+          2026年5月4日 星期一
         </time>
       </span>
     
@@ -330,7 +333,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          44 字
+          1.6k 字
         
       </span>
     
@@ -341,7 +344,7 @@
         
         
         
-          1 分钟
+          14 分钟
         
       </span>
     
@@ -380,7 +383,7 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">我的第一篇文章</h1>
+            <h1 id="seo-header">大模型经典理论：涌现能力、思维链与 In-Context Learning</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
@@ -394,10 +397,105 @@
             
               <div class="markdown-body">
                 
-                <p>欢迎来到 Tandy 的博客！这是第一篇文章。</p>
+                <p>大模型展现出一系列小模型完全不具备的能力，这些”涌现”现象背后有哪些理论解释？本文梳理三个核心概念。</p>
 <span id="more"></span>
 
-<h2 id="关于本站"><a href="#关于本站" class="headerlink" title="关于本站"></a>关于本站</h2><p>本站使用 <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a> + <a target="_blank" rel="noopener" href="https://github.com/fluid-dev/hexo-theme-fluid">Fluid</a> 主题搭建。</p>
+<h2 id="1-涌现能力（Emergent-Abilities）"><a href="#1-涌现能力（Emergent-Abilities）" class="headerlink" title="1. 涌现能力（Emergent Abilities）"></a>1. 涌现能力（Emergent Abilities）</h2><h3 id="1-1-什么是涌现"><a href="#1-1-什么是涌现" class="headerlink" title="1.1 什么是涌现"></a>1.1 什么是涌现</h3><p>Wei et al. (2022) 发现：某些能力在模型规模低于某个阈值时<strong>几乎为零</strong>，超过阈值后<strong>突然出现</strong>。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs">准确率<br>  │<br>1 │                    ╭──────────────<br>  │                   ╱<br>  │                  ╱<br>  │                 ╱<br>0 │────────────────╯<br>  └──────────────────────────────────→ 参数量<br>              ↑<br>           涌现阈值<br></code></pre></td></tr></table></figure>
+
+<p><strong>典型涌现能力：</strong></p>
+<table>
+<thead>
+<tr>
+<th>能力</th>
+<th>涌现阈值（约）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>3 位数加法</td>
+<td>13B</td>
+</tr>
+<tr>
+<td>多步推理</td>
+<td>100B</td>
+</tr>
+<tr>
+<td>思维链推理</td>
+<td>100B</td>
+</tr>
+<tr>
+<td>指令跟随</td>
+<td>68B</td>
+</tr>
+</tbody></table>
+<h3 id="1-2-涌现的理论解释"><a href="#1-2-涌现的理论解释" class="headerlink" title="1.2 涌现的理论解释"></a>1.2 涌现的理论解释</h3><p><strong>假说一：评估指标的非线性</strong><br>某些任务用离散指标（如完全正确率）评估，模型能力是连续提升的，但指标在阈值处突然跳变。</p>
+<p><strong>假说二：多步骤组合</strong><br>复杂任务需要多个子能力同时具备，每个子能力的概率为 $p$，$k$ 步全对的概率为 $p^k$，当 $p$ 从 0.9 提升到 0.99 时，$p^{10}$ 从 0.35 跳升到 0.90。</p>
+<hr>
+<h2 id="2-思维链（Chain-of-Thought-CoT）"><a href="#2-思维链（Chain-of-Thought-CoT）" class="headerlink" title="2. 思维链（Chain-of-Thought, CoT）"></a>2. 思维链（Chain-of-Thought, CoT）</h2><h3 id="2-1-核心思想"><a href="#2-1-核心思想" class="headerlink" title="2.1 核心思想"></a>2.1 核心思想</h3><p>普通提示：</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs tap">问：Roger 有<span class="hljs-number"> 5 </span>个网球，买了<span class="hljs-number"> 2 </span>罐，每罐<span class="hljs-number"> 3 </span>个，共几个？<br>答：11<br></code></pre></td></tr></table></figure>
+
+<p>思维链提示：</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs tap">问：Roger 有<span class="hljs-number"> 5 </span>个网球，买了<span class="hljs-number"> 2 </span>罐，每罐<span class="hljs-number"> 3 </span>个，共几个？<br>答：Roger 开始有<span class="hljs-number"> 5 </span>个。2 罐 × 每罐<span class="hljs-number"> 3 </span>个 =<span class="hljs-number"> 6 </span>个。<br>   <span class="hljs-number"> 5 </span>+<span class="hljs-number"> 6 </span>=<span class="hljs-number"> 11 </span>个。答案是 11。<br></code></pre></td></tr></table></figure>
+
+<p>在 PaLM 540B 上，CoT 将数学推理准确率从 **17% 提升到 58%**。</p>
+<h3 id="2-2-Zero-shot-CoT"><a href="#2-2-Zero-shot-CoT" class="headerlink" title="2.2 Zero-shot CoT"></a>2.2 Zero-shot CoT</h3><p>Kojima et al. (2022) 发现只需在问题后加一句话：</p>
+<blockquote>
+<p><strong>“Let’s think step by step.”</strong></p>
+</blockquote>
+<p>就能激活模型的推理能力，无需任何示例。</p>
+<h3 id="2-3-为什么-CoT-有效？"><a href="#2-3-为什么-CoT-有效？" class="headerlink" title="2.3 为什么 CoT 有效？"></a>2.3 为什么 CoT 有效？</h3><p><strong>计算深度假说：</strong> Transformer 的层数决定了”计算步骤数”。直接输出答案相当于用固定层数解决任意复杂问题；CoT 将中间步骤写出来，等效于增加了计算深度。</p>
+<p>形式化：设问题复杂度为 $C$，模型层数为 $L$：</p>
+<ul>
+<li>无 CoT：需要 $L \geq C$</li>
+<li>有 CoT（$k$ 步）：每步只需 $L \geq C&#x2F;k$</li>
+</ul>
+<hr>
+<h2 id="3-In-Context-Learning（ICL）"><a href="#3-In-Context-Learning（ICL）" class="headerlink" title="3. In-Context Learning（ICL）"></a>3. In-Context Learning（ICL）</h2><h3 id="3-1-定义"><a href="#3-1-定义" class="headerlink" title="3.1 定义"></a>3.1 定义</h3><p>ICL 指模型在<strong>不更新任何参数</strong>的情况下，仅通过 prompt 中的示例学会新任务：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ruby">示例<span class="hljs-number">1</span>：输入: <span class="hljs-string">&quot;我很开心&quot;</span> → 输出: 正面<br>示例<span class="hljs-number">2</span>：输入: <span class="hljs-string">&quot;今天真糟糕&quot;</span> → 输出: 负面<br>示例<span class="hljs-number">3</span>：输入: <span class="hljs-string">&quot;这部电影太棒了&quot;</span> → 输出: <span class="hljs-string">??</span>?<br></code></pre></td></tr></table></figure>
+
+<p>模型直接输出”正面”，无需任何梯度更新。</p>
+<h3 id="3-2-ICL-的理论解释"><a href="#3-2-ICL-的理论解释" class="headerlink" title="3.2 ICL 的理论解释"></a>3.2 ICL 的理论解释</h3><p><strong>梯度下降等价假说（Akyürek et al., 2022）：</strong></p>
+<p>Transformer 的前向传播在数学上等价于在隐空间执行梯度下降：</p>
+<p>$$W_{\text{ICL}} \approx W_0 - \eta \sum_{i&#x3D;1}^k \nabla_W \mathcal{L}(x_i, y_i)$$</p>
+<p>即：示例相当于隐式地更新了模型的”工作记忆”中的权重。</p>
+<p><strong>贝叶斯推断假说：</strong></p>
+<p>$$P(y|x, \text{示例}) \propto P(\text{示例}|y, x) \cdot P(y|x)$$</p>
+<p>模型通过示例更新对任务的后验概率估计。</p>
+<h3 id="3-3-影响-ICL-效果的因素"><a href="#3-3-影响-ICL-效果的因素" class="headerlink" title="3.3 影响 ICL 效果的因素"></a>3.3 影响 ICL 效果的因素</h3><table>
+<thead>
+<tr>
+<th>因素</th>
+<th>影响</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>示例数量</td>
+<td>更多示例通常更好，但受 context 长度限制</td>
+</tr>
+<tr>
+<td>示例顺序</td>
+<td>顺序不同可导致 30%+ 的性能差异</td>
+</tr>
+<tr>
+<td>示例标签正确性</td>
+<td>标签错误影响较小（格式比内容更重要）</td>
+</tr>
+<tr>
+<td>模型规模</td>
+<td>ICL 能力随规模增强，小模型几乎无 ICL</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="4-三者的关系"><a href="#4-三者的关系" class="headerlink" title="4. 三者的关系"></a>4. 三者的关系</h2><figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs excel">规模提升<br>    │<br>    ├──→ 涌现能力（能力突然出现）<br>    │<br>    ├──→ ICL 能力（从示例中学习）<br>    │<br>    └──→ <span class="hljs-built_in">CoT</span> 能力（逐步推理）<br>              │<br>              └──→ 更强的 ICL（推理示例更有效）<br></code></pre></td></tr></table></figure>
+
+<p>这三种能力相互增强，共同构成了大模型”智能”的核心。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><strong>涌现</strong>：规模带来质变，不是量变的简单累积</li>
+<li><strong>CoT</strong>：让模型”说出思考过程”，等效增加计算深度</li>
+<li><strong>ICL</strong>：无需微调，prompt 即是程序</li>
+</ul>
+<p>这三个现象都指向同一个结论：<strong>规模是通往智能的关键路径之一</strong>，但我们对其背后机制的理解仍然有限。</p>
 
                 
               </div>
@@ -416,7 +514,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E9%9A%8F%E7%AC%94/" class="category-chain-item">随笔</a>
+  <a href="/categories/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%90%86%E8%AE%BA/" class="category-chain-item">大模型理论</a>
   
   
 
@@ -431,9 +529,15 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E5%8D%9A%E5%AE%A2/" class="print-no-link">#博客</a>
+        <a href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" class="print-no-link">#大模型</a>
       
-        <a href="/tags/Hexo/" class="print-no-link">#Hexo</a>
+        <a href="/tags/%E6%B6%8C%E7%8E%B0%E8%83%BD%E5%8A%9B/" class="print-no-link">#涌现能力</a>
+      
+        <a href="/tags/%E6%80%9D%E7%BB%B4%E9%93%BE/" class="print-no-link">#思维链</a>
+      
+        <a href="/tags/ICL/" class="print-no-link">#ICL</a>
+      
+        <a href="/tags/%E7%90%86%E8%AE%BA/" class="print-no-link">#理论</a>
       
     </div>
   
@@ -445,8 +549,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>我的第一篇文章</div>
-      <div>https://phoenix-rebir.github.io/2026/05/03/hello-world/</div>
+      <div>大模型经典理论：涌现能力、思维链与 In-Context Learning</div>
+      <div>https://phoenix-rebir.github.io/2026/05/04/llm-emergent-cot-icl/</div>
     </div>
     <div class="license-meta">
       
@@ -458,7 +562,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年5月3日</div>
+          <div>2026年5月4日</div>
         </div>
       
       
@@ -490,15 +594,15 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/05/04/transformer-architecture/" title="Transformer 架构详解：从自注意力到大模型的基石">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Transformer 架构详解：从自注意力到大模型的基石</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
+                    
+                      <a href="/2026/05/04/llm-math-backprop/" title="大模型数学基础：反向传播与梯度推导全解析">
+                        <span class="hidden-mobile">大模型数学基础：反向传播与梯度推导全解析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
                     
                   </article>
                 </div>

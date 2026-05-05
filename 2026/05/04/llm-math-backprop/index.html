@@ -19,25 +19,27 @@
   <meta name="author" content="tandy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="欢迎来到 Tandy 的博客！这是第一篇文章。">
+    <meta name="description" content="理解大模型训练的数学本质，需要掌握反向传播算法。本文从链式法则出发，推导 Transformer 中关键操作的梯度。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="我的第一篇文章">
-<meta property="og:url" content="https://phoenix-rebir.github.io/2026/05/03/hello-world/index.html">
+<meta property="og:title" content="大模型数学基础：反向传播与梯度推导全解析">
+<meta property="og:url" content="https://phoenix-rebir.github.io/2026/05/04/llm-math-backprop/index.html">
 <meta property="og:site_name" content="Tandy&#39;s Blog">
-<meta property="og:description" content="欢迎来到 Tandy 的博客！这是第一篇文章。">
+<meta property="og:description" content="理解大模型训练的数学本质，需要掌握反向传播算法。本文从链式法则出发，推导 Transformer 中关键操作的梯度。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-05-03T03:00:00.000Z">
+<meta property="article:published_time" content="2026-05-04T06:00:00.000Z">
 <meta property="article:modified_time" content="2026-05-05T08:47:42.962Z">
 <meta property="article:author" content="tandy">
-<meta property="article:tag" content="博客">
-<meta property="article:tag" content="Hexo">
+<meta property="article:tag" content="大模型">
+<meta property="article:tag" content="反向传播">
+<meta property="article:tag" content="数学推导">
+<meta property="article:tag" content="梯度下降">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>我的第一篇文章 - Tandy&#39;s Blog</title>
+  <title>大模型数学基础：反向传播与梯度推导全解析 - Tandy&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -306,7 +308,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="我的第一篇文章"></span>
+            <span id="subtitle" data-typed-text="大模型数学基础：反向传播与梯度推导全解析"></span>
           
         </div>
 
@@ -317,8 +319,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-05-03 11:00" pubdate>
-          2026年5月3日 星期日
+        <time datetime="2026-05-04 14:00" pubdate>
+          2026年5月4日 星期一
         </time>
       </span>
     
@@ -330,7 +332,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          44 字
+          3.1k 字
         
       </span>
     
@@ -341,7 +343,7 @@
         
         
         
-          1 分钟
+          26 分钟
         
       </span>
     
@@ -380,7 +382,7 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">我的第一篇文章</h1>
+            <h1 id="seo-header">大模型数学基础：反向传播与梯度推导全解析</h1>
             
               <p id="updated-time" class="note note-info" style="">
                 
@@ -394,10 +396,89 @@
             
               <div class="markdown-body">
                 
-                <p>欢迎来到 Tandy 的博客！这是第一篇文章。</p>
+                <p>理解大模型训练的数学本质，需要掌握反向传播算法。本文从链式法则出发，推导 Transformer 中关键操作的梯度。</p>
 <span id="more"></span>
 
-<h2 id="关于本站"><a href="#关于本站" class="headerlink" title="关于本站"></a>关于本站</h2><p>本站使用 <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a> + <a target="_blank" rel="noopener" href="https://github.com/fluid-dev/hexo-theme-fluid">Fluid</a> 主题搭建。</p>
+<h2 id="1-链式法则：反向传播的数学基础"><a href="#1-链式法则：反向传播的数学基础" class="headerlink" title="1. 链式法则：反向传播的数学基础"></a>1. 链式法则：反向传播的数学基础</h2><p>设复合函数 $L &#x3D; f(g(x))$，则：</p>
+<p>$$\frac{\partial L}{\partial x} &#x3D; \frac{\partial L}{\partial g} \cdot \frac{\partial g}{\partial x}$$</p>
+<p>对于深度网络 $L &#x3D; f_n(f_{n-1}(…f_1(x)))$：</p>
+<p>$$\frac{\partial L}{\partial x} &#x3D; \frac{\partial L}{\partial f_n} \cdot \frac{\partial f_n}{\partial f_{n-1}} \cdots \frac{\partial f_2}{\partial f_1} \cdot \frac{\partial f_1}{\partial x}$$</p>
+<p><strong>梯度消失的根源：</strong> 若每层梯度 $&lt; 1$，连乘后趋近于 0；若 $&gt; 1$，则梯度爆炸。</p>
+<hr>
+<h2 id="2-Softmax-的梯度推导"><a href="#2-Softmax-的梯度推导" class="headerlink" title="2. Softmax 的梯度推导"></a>2. Softmax 的梯度推导</h2><p>Softmax 定义：</p>
+<p>$$\text{softmax}(z_i) &#x3D; \frac{e^{z_i}}{\sum_j e^{z_j}} &#x3D; p_i$$</p>
+<p>对 $z_j$ 求偏导，分两种情况：</p>
+<p><strong>当 $i &#x3D; j$ 时：</strong></p>
+<p>$$\frac{\partial p_i}{\partial z_i} &#x3D; \frac{e^{z_i} \sum_j e^{z_j} - e^{z_i} \cdot e^{z_i}}{\left(\sum_j e^{z_j}\right)^2} &#x3D; p_i(1 - p_i)$$</p>
+<p><strong>当 $i \neq j$ 时：</strong></p>
+<p>$$\frac{\partial p_i}{\partial z_j} &#x3D; \frac{0 - e^{z_i} \cdot e^{z_j}}{\left(\sum_k e^{z_k}\right)^2} &#x3D; -p_i p_j$$</p>
+<p><strong>矩阵形式：</strong></p>
+<p>$$\frac{\partial \mathbf{p}}{\partial \mathbf{z}} &#x3D; \text{diag}(\mathbf{p}) - \mathbf{p}\mathbf{p}^T$$</p>
+<hr>
+<h2 id="3-交叉熵损失的梯度"><a href="#3-交叉熵损失的梯度" class="headerlink" title="3. 交叉熵损失的梯度"></a>3. 交叉熵损失的梯度</h2><p>交叉熵损失（配合 Softmax）：</p>
+<p>$$L &#x3D; -\sum_i y_i \log p_i$$</p>
+<p>对 $z_j$ 求导（利用链式法则）：</p>
+<p>$$\frac{\partial L}{\partial z_j} &#x3D; -\sum_i y_i \frac{\partial \log p_i}{\partial z_j} &#x3D; -\sum_i \frac{y_i}{p_i} \frac{\partial p_i}{\partial z_j}$$</p>
+<p>代入 Softmax 梯度：</p>
+<p>$$&#x3D; -\frac{y_j}{p_j} p_j(1-p_j) - \sum_{i \neq j} \frac{y_i}{p_i}(-p_i p_j)$$</p>
+<p>$$&#x3D; -y_j(1-p_j) + \sum_{i \neq j} y_i p_j &#x3D; p_j \sum_i y_i - y_j$$</p>
+<p>由于 $\sum_i y_i &#x3D; 1$（one-hot 标签），最终得到极其简洁的结果：</p>
+<p>$$\boxed{\frac{\partial L}{\partial z_j} &#x3D; p_j - y_j}$$</p>
+<p><strong>直觉：</strong> 梯度就是预测概率与真实标签的差值，预测越准梯度越小。</p>
+<hr>
+<h2 id="4-注意力机制的梯度"><a href="#4-注意力机制的梯度" class="headerlink" title="4. 注意力机制的梯度"></a>4. 注意力机制的梯度</h2><p>注意力输出：$O &#x3D; \text{softmax}\left(\frac{QK^T}{\sqrt{d}}\right)V &#x3D; AV$</p>
+<p>设损失对 $O$ 的梯度为 $\frac{\partial L}{\partial O}$，则：</p>
+<p><strong>对 V 的梯度：</strong></p>
+<p>$$\frac{\partial L}{\partial V} &#x3D; A^T \frac{\partial L}{\partial O}$$</p>
+<p><strong>对注意力权重 A 的梯度：</strong></p>
+<p>$$\frac{\partial L}{\partial A} &#x3D; \frac{\partial L}{\partial O} V^T$$</p>
+<p><strong>对 Q、K 的梯度</strong>（通过 Softmax 反传）：</p>
+<p>$$\frac{\partial L}{\partial Q} &#x3D; \frac{1}{\sqrt{d}} \frac{\partial L}{\partial S} K, \quad \frac{\partial L}{\partial K} &#x3D; \frac{1}{\sqrt{d}} \left(\frac{\partial L}{\partial S}\right)^T Q$$</p>
+<p>其中 $\frac{\partial L}{\partial S}$ 通过 Softmax 的 Jacobian 矩阵计算。</p>
+<hr>
+<h2 id="5-Layer-Normalization-的梯度"><a href="#5-Layer-Normalization-的梯度" class="headerlink" title="5. Layer Normalization 的梯度"></a>5. Layer Normalization 的梯度</h2><p>LayerNorm 定义：</p>
+<p>$$\hat{x}_i &#x3D; \frac{x_i - \mu}{\sqrt{\sigma^2 + \epsilon}}, \quad y_i &#x3D; \gamma \hat{x}_i + \beta$$</p>
+<p>其中 $\mu &#x3D; \frac{1}{n}\sum x_i$，$\sigma^2 &#x3D; \frac{1}{n}\sum(x_i - \mu)^2$</p>
+<p>对 $x_i$ 的梯度（推导较复杂，结果为）：</p>
+<p>$$\frac{\partial L}{\partial x_i} &#x3D; \frac{\gamma}{\sqrt{\sigma^2+\epsilon}} \left[\frac{\partial L}{\partial y_i} - \frac{1}{n}\sum_j \frac{\partial L}{\partial y_j} - \hat{x}_i \cdot \frac{1}{n}\sum_j \frac{\partial L}{\partial y_j}\hat{x}_j\right]$$</p>
+<hr>
+<h2 id="6-梯度优化技巧"><a href="#6-梯度优化技巧" class="headerlink" title="6. 梯度优化技巧"></a>6. 梯度优化技巧</h2><h3 id="Adam-优化器"><a href="#Adam-优化器" class="headerlink" title="Adam 优化器"></a>Adam 优化器</h3><p>$$m_t &#x3D; \beta_1 m_{t-1} + (1-\beta_1)g_t \quad \text{（一阶矩，动量）}$$</p>
+<p>$$v_t &#x3D; \beta_2 v_{t-1} + (1-\beta_2)g_t^2 \quad \text{（二阶矩，自适应学习率）}$$</p>
+<p>$$\theta_t &#x3D; \theta_{t-1} - \frac{\eta}{\sqrt{\hat{v}_t} + \epsilon}\hat{m}_t$$</p>
+<p>大模型训练通常使用 $\beta_1&#x3D;0.9, \beta_2&#x3D;0.95, \epsilon&#x3D;10^{-8}$。</p>
+<h3 id="梯度裁剪"><a href="#梯度裁剪" class="headerlink" title="梯度裁剪"></a>梯度裁剪</h3><p>防止梯度爆炸：</p>
+<p>$$g \leftarrow g \cdot \min\left(1, \frac{\text{clip_norm}}{||g||_2}\right)$$</p>
+<p>LLaMA 训练使用 <code>clip_norm=1.0</code>。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>前向</th>
+<th>梯度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Softmax + CE</td>
+<td>$p &#x3D; \text{softmax}(z)$</td>
+<td>$p - y$</td>
+</tr>
+<tr>
+<td>Linear</td>
+<td>$y &#x3D; Wx$</td>
+<td>$\frac{\partial L}{\partial W} &#x3D; \frac{\partial L}{\partial y} x^T$</td>
+</tr>
+<tr>
+<td>LayerNorm</td>
+<td>归一化</td>
+<td>见上文公式</td>
+</tr>
+<tr>
+<td>Attention</td>
+<td>$O &#x3D; AV$</td>
+<td>$\frac{\partial L}{\partial V} &#x3D; A^T \frac{\partial L}{\partial O}$</td>
+</tr>
+</tbody></table>
 
                 
               </div>
@@ -416,7 +497,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E9%9A%8F%E7%AC%94/" class="category-chain-item">随笔</a>
+  <a href="/categories/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E6%95%B0%E5%AD%A6/" class="category-chain-item">大模型数学</a>
   
   
 
@@ -431,9 +512,13 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E5%8D%9A%E5%AE%A2/" class="print-no-link">#博客</a>
+        <a href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" class="print-no-link">#大模型</a>
       
-        <a href="/tags/Hexo/" class="print-no-link">#Hexo</a>
+        <a href="/tags/%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD/" class="print-no-link">#反向传播</a>
+      
+        <a href="/tags/%E6%95%B0%E5%AD%A6%E6%8E%A8%E5%AF%BC/" class="print-no-link">#数学推导</a>
+      
+        <a href="/tags/%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D/" class="print-no-link">#梯度下降</a>
       
     </div>
   
@@ -445,8 +530,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>我的第一篇文章</div>
-      <div>https://phoenix-rebir.github.io/2026/05/03/hello-world/</div>
+      <div>大模型数学基础：反向传播与梯度推导全解析</div>
+      <div>https://phoenix-rebir.github.io/2026/05/04/llm-math-backprop/</div>
     </div>
     <div class="license-meta">
       
@@ -458,7 +543,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年5月3日</div>
+          <div>2026年5月4日</div>
         </div>
       
       
@@ -490,15 +575,21 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/05/04/transformer-architecture/" title="Transformer 架构详解：从自注意力到大模型的基石">
+                      <a href="/2026/05/04/llm-emergent-cot-icl/" title="大模型经典理论：涌现能力、思维链与 In-Context Learning">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Transformer 架构详解：从自注意力到大模型的基石</span>
+                        <span class="hidden-mobile">大模型经典理论：涌现能力、思维链与 In-Context Learning</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
                   </article>
                   <article class="post-next col-6">
                     
+                    
+                      <a href="/2026/05/04/llm-inference-frameworks/" title="大模型推理框架对比：vLLM、TensorRT-LLM 与 llama.cpp">
+                        <span class="hidden-mobile">大模型推理框架对比：vLLM、TensorRT-LLM 与 llama.cpp</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
                     
                   </article>
                 </div>
