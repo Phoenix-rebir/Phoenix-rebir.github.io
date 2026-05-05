@@ -19,15 +19,15 @@
   <meta name="author" content="tandy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="你好，我是 Tandy，欢迎来到我的博客。 这里记录我的技术学习、生活感悟和各种折腾经历。 联系我 GitHub: Phoenix-rebir">
+    <meta name="description" content="你好，我是 Tandy，欢迎来到我的博客。 这里记录我的技术学习、生活感悟和各种折腾经历。 联系我  GitHub: Phoenix-rebir">
 <meta property="og:type" content="website">
 <meta property="og:title" content="关于">
 <meta property="og:url" content="https://phoenix-rebir.github.io/about/index.html">
 <meta property="og:site_name" content="Tandy&#39;s Blog">
-<meta property="og:description" content="你好，我是 Tandy，欢迎来到我的博客。 这里记录我的技术学习、生活感悟和各种折腾经历。 联系我 GitHub: Phoenix-rebir">
+<meta property="og:description" content="你好，我是 Tandy，欢迎来到我的博客。 这里记录我的技术学习、生活感悟和各种折腾经历。 联系我  GitHub: Phoenix-rebir">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-05-05T09:24:52.433Z">
-<meta property="article:modified_time" content="2026-05-05T09:24:52.433Z">
+<meta property="article:published_time" content="2026-05-05T09:33:18.523Z">
+<meta property="article:modified_time" content="2026-05-05T09:33:18.523Z">
 <meta property="article:author" content="tandy">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -46,6 +46,8 @@
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
 
 
 
@@ -363,7 +365,8 @@
   <div class="markdown-body">
     <p>你好，我是 <strong>Tandy</strong>，欢迎来到我的博客。</p>
 <p>这里记录我的技术学习、生活感悟和各种折腾经历。</p>
-<h2 id="联系我"><a href="#联系我" class="headerlink" title="联系我"></a>联系我</h2><ul>
+<h2 id="联系我">联系我</h2>
+<ul>
 <li>GitHub: <a target="_blank" rel="noopener" href="https://github.com/Phoenix-rebir">Phoenix-rebir</a></li>
 </ul>
 
@@ -397,7 +400,6 @@
 
   
   
-
 
 
 
@@ -441,12 +443,6 @@
 
     
 
-    
-      <div class="col-lg-7 mx-auto nopadding-x-md">
-        <div class="container custom mx-auto">
-          <script>window.MathJax = {tex: {inlineMath: [["$","$"],["\\(","\\)"]]}};</script>
-        </div>
-      </div>
     
   </main>
 
@@ -586,49 +582,6 @@
 
 
   <script>Fluid.plugins.imageCaption();</script>
-
-  
-      <script>
-        if (!window.MathJax) {
-          window.MathJax = {
-            tex    : {
-              inlineMath: { '[+]': [['$', '$']] }
-            },
-            loader : {
-              load: ['ui/lazy']
-            },
-            options: {
-              renderActions: {
-                insertedScript: [200, () => {
-                  document.querySelectorAll('mjx-container').forEach(node => {
-                    let target = node.parentNode;
-                    if (target.nodeName.toLowerCase() === 'li') {
-                      target.parentNode.classList.add('has-jax');
-                    }
-                  });
-                }, '', false]
-              }
-            }
-          };
-        } else {
-          MathJax.startup.document.state(0);
-          MathJax.texReset();
-          MathJax.typeset();
-          MathJax.typesetPromise();
-        }
-
-        Fluid.events.registerRefreshCallback(function() {
-          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
-            MathJax.startup.document.state(0);
-            MathJax.texReset();
-            MathJax.typeset();
-            MathJax.typesetPromise();
-          }
-        });
-      </script>
-    
-
-  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
 
   <script  src="/js/local-search.js" ></script>
 

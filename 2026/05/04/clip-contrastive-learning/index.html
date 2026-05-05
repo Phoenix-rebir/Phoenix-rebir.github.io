@@ -27,7 +27,7 @@
 <meta property="og:description" content="2021 年 OpenAI 发布的 CLIP（Contrastive Language-Image Pre-training）用极其优雅的方式解决了视觉-语言对齐问题，成为多模态领域最重要的基础模型之一。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-05-04T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-05-05T09:24:52.433Z">
+<meta property="article:modified_time" content="2026-05-05T09:33:18.523Z">
 <meta property="article:author" content="tandy">
 <meta property="article:tag" content="多模态">
 <meta property="article:tag" content="CLIP">
@@ -50,6 +50,8 @@
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
 
 
 
@@ -332,7 +334,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          1.9k 字
+          2.1k 字
         
       </span>
     
@@ -343,7 +345,7 @@
         
         
         
-          16 分钟
+          18 分钟
         
       </span>
     
@@ -398,7 +400,8 @@
                 
                 <p>2021 年 OpenAI 发布的 CLIP（Contrastive Language-Image Pre-training）用极其优雅的方式解决了视觉-语言对齐问题，成为多模态领域最重要的基础模型之一。</p>
 <span id="more"></span>
-<h2 id="1-CLIP-解决了什么问题？"><a href="#1-CLIP-解决了什么问题？" class="headerlink" title="1. CLIP 解决了什么问题？"></a>1. CLIP 解决了什么问题？</h2><p>传统视觉模型的训练范式：收集图片 → 人工标注类别 → 有监督分类训练。</p>
+<h2 id="1-CLIP-解决了什么问题？">1. CLIP 解决了什么问题？</h2>
+<p>传统视觉模型的训练范式：收集图片 → 人工标注类别 → 有监督分类训练。</p>
 <p>这种方式有两个根本限制：</p>
 <ul>
 <li><strong>标签空间固定</strong>：训练时没见过的类别无法识别</li>
@@ -406,7 +409,8 @@
 </ul>
 <p>CLIP 的思路：互联网上有海量的<strong>图文对</strong>（图片+描述文字），用这些数据做<strong>对比学习</strong>，让模型自己学会对齐视觉和语言。</p>
 <hr>
-<h2 id="2-架构设计"><a href="#2-架构设计" class="headerlink" title="2. 架构设计"></a>2. 架构设计</h2><figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs abnf">图片输入                    文字输入<br>   │                           │<br>   ▼                           ▼<br>[Image Encoder]           [Text Encoder]<br>(ViT 或 ResNet)            (Transformer)<br>   │                           │<br>   ▼                           ▼<br>图像嵌入向量 I_i          文本嵌入向量 T_j<br>   │                           │<br>   └──────────┬────────────────┘<br>              ▼<br>       余弦相似度矩阵<br>       对角线 <span class="hljs-operator">=</span> 匹配对<br>       非对角线 <span class="hljs-operator">=</span> 不匹配对<br></code></pre></td></tr></table></figure>
+<h2 id="2-架构设计">2. 架构设计</h2>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs abnf">图片输入                    文字输入<br>   │                           │<br>   ▼                           ▼<br>[Image Encoder]           [Text Encoder]<br>(ViT 或 ResNet)            (Transformer)<br>   │                           │<br>   ▼                           ▼<br>图像嵌入向量 I_i          文本嵌入向量 T_j<br>   │                           │<br>   └──────────┬────────────────┘<br>              ▼<br>       余弦相似度矩阵<br>       对角线 <span class="hljs-operator">=</span> 匹配对<br>       非对角线 <span class="hljs-operator">=</span> 不匹配对<br></code></pre></td></tr></table></figure>
 <p><strong>两个编码器：</strong></p>
 <ul>
 <li><strong>Image Encoder</strong>：ViT-L/14 或 ResNet，将图片编码为固定维度向量</li>
@@ -414,14 +418,22 @@
 </ul>
 <p>两个向量被投影到<strong>同一个嵌入空间</strong>，用余弦相似度衡量匹配程度。</p>
 <hr>
-<h2 id="3-对比学习目标函数"><a href="#3-对比学习目标函数" class="headerlink" title="3. 对比学习目标函数"></a>3. 对比学习目标函数</h2><p>给定一个 batch 的 $N$ 个图文对 ${(I_i, T_i)}_{i=1}^N$：</p>
+<h2 id="3-对比学习目标函数">3. 对比学习目标函数</h2>
+<p>给定一个 batch 的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi></mrow><annotation encoding="application/x-tex">N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span></span></span></span> 个图文对 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mo stretchy="false">(</mo><msub><mi>I</mi><mi>i</mi></msub><mo separator="true">,</mo><msub><mi>T</mi><mi>i</mi></msub><mo stretchy="false">)</mo><msubsup><mo stretchy="false">}</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></msubsup></mrow><annotation encoding="application/x-tex">\{(I_i, T_i)\}_{i=1}^N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0999949999999998em;vertical-align:-0.258664em;"></span><span class="mopen">{</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mclose"><span class="mclose">}</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8413309999999999em;"><span style="top:-2.441336em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">N</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.258664em;"><span></span></span></span></span></span></span></span></span></span>：</p>
 <p><strong>相似度矩阵：</strong></p>
-<script type="math/tex; mode=display">S_{ij} = \frac{f(I_i) \cdot g(T_j)}{|f(I_i)| \cdot |g(T_j)|} \cdot \exp(\tau)</script><p>其中 $\tau$ 是可学习的温度参数，$f$ 和 $g$ 分别是图像和文本编码器。</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>S</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mfrac><mrow><mi>f</mi><mo stretchy="false">(</mo><msub><mi>I</mi><mi>i</mi></msub><mo stretchy="false">)</mo><mo>⋅</mo><mi>g</mi><mo stretchy="false">(</mo><msub><mi>T</mi><mi>j</mi></msub><mo stretchy="false">)</mo></mrow><mrow><mi mathvariant="normal">∣</mi><mi>f</mi><mo stretchy="false">(</mo><msub><mi>I</mi><mi>i</mi></msub><mo stretchy="false">)</mo><mi mathvariant="normal">∣</mi><mo>⋅</mo><mi mathvariant="normal">∣</mi><mi>g</mi><mo stretchy="false">(</mo><msub><mi>T</mi><mi>j</mi></msub><mo stretchy="false">)</mo><mi mathvariant="normal">∣</mi></mrow></mfrac><mo>⋅</mo><mi>exp</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>τ</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">S_{ij} = \frac{f(I_i) \cdot g(T_j)}{|f(I_i)| \cdot |g(T_j)|} \cdot \exp(\tau)
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.05764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.399108em;vertical-align:-0.972108em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">∣</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mord">∣</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord">∣</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mord">∣</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.972108em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop">exp</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.1132em;">τ</span><span class="mclose">)</span></span></span></span></span></p>
+<p>其中 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi></mrow><annotation encoding="application/x-tex">\tau</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.1132em;">τ</span></span></span></span> 是可学习的温度参数，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi></mrow><annotation encoding="application/x-tex">f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi></mrow><annotation encoding="application/x-tex">g</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span></span></span></span> 分别是图像和文本编码器。</p>
 <p><strong>损失函数（对称交叉熵）：</strong></p>
-<script type="math/tex; mode=display">\mathcal{L} = \frac{1}{2}\left[\mathcal{L}_{\text{image}} + \mathcal{L}_{\text{text}}\right]</script><script type="math/tex; mode=display">\mathcal{L}_{\text{image}} = -\frac{1}{N}\sum_{i=1}^N \log \frac{\exp(S_{ii})}{\sum_{j=1}^N \exp(S_{ij})}</script><p><strong>直觉理解：</strong></p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi mathvariant="script">L</mi><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mrow><mo fence="true">[</mo><msub><mi mathvariant="script">L</mi><mtext>image</mtext></msub><mo>+</mo><msub><mi mathvariant="script">L</mi><mtext>text</mtext></msub><mo fence="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal{L} = \frac{1}{2}\left[\mathcal{L}_{\text{image}} + \mathcal{L}_{\text{text}}\right]
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord"><span class="mord mathcal">L</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.00744em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.32144em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">[</span><span class="mord"><span class="mord"><span class="mord mathcal">L</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.317502em;"><span style="top:-2.5500000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">image</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord"><span class="mord mathcal">L</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">text</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;">]</span></span></span></span></span></span></p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi mathvariant="script">L</mi><mtext>image</mtext></msub><mo>=</mo><mo>−</mo><mfrac><mn>1</mn><mi>N</mi></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><mi>log</mi><mo>⁡</mo><mfrac><mrow><mi>exp</mi><mo>⁡</mo><mo stretchy="false">(</mo><msub><mi>S</mi><mrow><mi>i</mi><mi>i</mi></mrow></msub><mo stretchy="false">)</mo></mrow><mrow><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><mi>exp</mi><mo>⁡</mo><mo stretchy="false">(</mo><msub><mi>S</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false">)</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">\mathcal{L}_{\text{image}} = -\frac{1}{N}\sum_{i=1}^N \log \frac{\exp(S_{ii})}{\sum_{j=1}^N \exp(S_{ij})}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord"><span class="mord mathcal">L</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.317502em;"><span style="top:-2.5500000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">image</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:3.1353850000000003em;vertical-align:-1.3070490000000001em;"></span><span class="mord">−</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.32144em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">N</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.8283360000000002em;"><span style="top:-1.872331em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.050005em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span><span style="top:-4.3000050000000005em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">N</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.277669em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.128769em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:-0.0000050000000000050004em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.981231em;"><span style="top:-2.40029em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.2029em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">N</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.43581800000000004em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop">exp</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.05764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mop">exp</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.05764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">i</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.3070490000000001em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<p><strong>直觉理解：</strong></p>
 <figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">     <span class="hljs-built_in">T1</span>    <span class="hljs-built_in">T2</span>    <span class="hljs-built_in">T3</span>    <span class="hljs-built_in">T4</span><br>I1 [<span class="hljs-number">0</span>.<span class="hljs-number">92</span>  <span class="hljs-number">0</span>.<span class="hljs-number">11</span>  <span class="hljs-number">0</span>.<span class="hljs-number">08</span>  <span class="hljs-number">0</span>.<span class="hljs-number">05</span>]  ← I1 应与 <span class="hljs-built_in">T1</span> 相似度最高<br>I2 [<span class="hljs-number">0</span>.<span class="hljs-number">07</span>  <span class="hljs-number">0</span>.<span class="hljs-number">89</span>  <span class="hljs-number">0</span>.<span class="hljs-number">12</span>  <span class="hljs-number">0</span>.<span class="hljs-number">09</span>]<br>I3 [<span class="hljs-number">0</span>.<span class="hljs-number">06</span>  <span class="hljs-number">0</span>.<span class="hljs-number">10</span>  <span class="hljs-number">0</span>.<span class="hljs-number">91</span>  <span class="hljs-number">0</span>.<span class="hljs-number">07</span>]<br>I4 [<span class="hljs-number">0</span>.<span class="hljs-number">04</span>  <span class="hljs-number">0</span>.<span class="hljs-number">08</span>  <span class="hljs-number">0</span>.<span class="hljs-number">06</span>  <span class="hljs-number">0</span>.<span class="hljs-number">93</span>]<br>     ↑ 对角线最大化，非对角线最小化<br></code></pre></td></tr></table></figure>
 <hr>
-<h2 id="4-零样本迁移（Zero-shot-Transfer）"><a href="#4-零样本迁移（Zero-shot-Transfer）" class="headerlink" title="4. 零样本迁移（Zero-shot Transfer）"></a>4. 零样本迁移（Zero-shot Transfer）</h2><p>CLIP 最惊艳的能力：<strong>无需任何微调</strong>，直接在新任务上做分类。</p>
+<h2 id="4-零样本迁移（Zero-shot-Transfer）">4. 零样本迁移（Zero-shot Transfer）</h2>
+<p>CLIP 最惊艳的能力：<strong>无需任何微调</strong>，直接在新任务上做分类。</p>
 <p><strong>步骤：</strong></p>
 <ol>
 <li>将类别名称转为文本提示：<code>&quot;a photo of a &#123;cat&#125;&quot;</code></li>
@@ -432,7 +444,7 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 伪代码示意</span><br>labels = [<span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;dog&quot;</span>, <span class="hljs-string">&quot;bird&quot;</span>]<br>text_prompts = [<span class="hljs-string">f&quot;a photo of a <span class="hljs-subst">&#123;l&#125;</span>&quot;</span> <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> labels]<br><br>text_features = clip.encode_text(text_prompts)   <span class="hljs-comment"># (3, 512)</span><br>image_features = clip.encode_image(image)         <span class="hljs-comment"># (1, 512)</span><br><br>similarities = image_features @ text_features.T   <span class="hljs-comment"># (1, 3)</span><br>predicted = labels[similarities.argmax()]<br></code></pre></td></tr></table></figure>
 <p><strong>ImageNet 零样本结果：</strong> CLIP 达到 76.2% top-1 准确率，与有监督训练的 ResNet-50 相当，但 CLIP <strong>从未见过 ImageNet 的训练数据</strong>。</p>
 <hr>
-<h2 id="5-训练规模"><a href="#5-训练规模" class="headerlink" title="5. 训练规模"></a>5. 训练规模</h2><div class="table-container">
+<h2 id="5-训练规模">5. 训练规模</h2>
 <table>
 <thead>
 <tr>
@@ -459,17 +471,19 @@
 </tr>
 </tbody>
 </table>
-</div>
 <hr>
-<h2 id="6-CLIP-的局限与影响"><a href="#6-CLIP-的局限与影响" class="headerlink" title="6. CLIP 的局限与影响"></a>6. CLIP 的局限与影响</h2><p><strong>局限：</strong></p>
+<h2 id="6-CLIP-的局限与影响">6. CLIP 的局限与影响</h2>
+<p><strong>局限：</strong></p>
 <ul>
 <li>对细粒度识别（如区分不同狗的品种）效果较差</li>
-<li>对抽象概念（如”比昨天更快乐”）理解有限</li>
+<li>对抽象概念（如&quot;比昨天更快乐&quot;）理解有限</li>
 <li>计数能力弱</li>
 </ul>
-<p><strong>影响：</strong><br>CLIP 的图像编码器成为众多多模态模型的视觉骨干，包括 DALL-E 2、Stable Diffusion、LLaVA 等。它证明了<strong>大规模弱监督</strong>可以替代精心标注的数据集。</p>
+<p><strong>影响：</strong><br>
+CLIP 的图像编码器成为众多多模态模型的视觉骨干，包括 DALL-E 2、Stable Diffusion、LLaVA 等。它证明了<strong>大规模弱监督</strong>可以替代精心标注的数据集。</p>
 <hr>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>CLIP 的核心贡献：</p>
+<h2 id="总结">总结</h2>
+<p>CLIP 的核心贡献：</p>
 <ol>
 <li>用<strong>对比学习</strong>替代有监督分类，突破标签空间限制</li>
 <li>利用互联网图文对实现<strong>超大规模训练</strong></li>
@@ -652,7 +666,6 @@
 
 
 
-
     
 
     
@@ -685,12 +698,6 @@
 
     
 
-    
-      <div class="col-lg-7 mx-auto nopadding-x-md">
-        <div class="container custom mx-auto">
-          <script>window.MathJax = {tex: {inlineMath: [["$","$"],["\\(","\\)"]]}};</script>
-        </div>
-      </div>
     
   </main>
 
@@ -934,49 +941,6 @@
 
 
   <script>Fluid.plugins.imageCaption();</script>
-
-  
-      <script>
-        if (!window.MathJax) {
-          window.MathJax = {
-            tex    : {
-              inlineMath: { '[+]': [['$', '$']] }
-            },
-            loader : {
-              load: ['ui/lazy']
-            },
-            options: {
-              renderActions: {
-                insertedScript: [200, () => {
-                  document.querySelectorAll('mjx-container').forEach(node => {
-                    let target = node.parentNode;
-                    if (target.nodeName.toLowerCase() === 'li') {
-                      target.parentNode.classList.add('has-jax');
-                    }
-                  });
-                }, '', false]
-              }
-            }
-          };
-        } else {
-          MathJax.startup.document.state(0);
-          MathJax.texReset();
-          MathJax.typeset();
-          MathJax.typesetPromise();
-        }
-
-        Fluid.events.registerRefreshCallback(function() {
-          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
-            MathJax.startup.document.state(0);
-            MathJax.texReset();
-            MathJax.typeset();
-            MathJax.typesetPromise();
-          }
-        });
-      </script>
-    
-
-  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
 
   <script  src="/js/local-search.js" ></script>
 

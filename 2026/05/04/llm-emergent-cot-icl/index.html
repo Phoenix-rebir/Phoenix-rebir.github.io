@@ -19,15 +19,15 @@
   <meta name="author" content="tandy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="大模型展现出一系列小模型完全不具备的能力，这些”涌现”现象背后有哪些理论解释？本文梳理三个核心概念。">
+    <meta name="description" content="大模型展现出一系列小模型完全不具备的能力，这些&quot;涌现&quot;现象背后有哪些理论解释？本文梳理三个核心概念。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="大模型经典理论：涌现能力、思维链与 In-Context Learning">
 <meta property="og:url" content="https://phoenix-rebir.github.io/2026/05/04/llm-emergent-cot-icl/index.html">
 <meta property="og:site_name" content="Tandy&#39;s Blog">
-<meta property="og:description" content="大模型展现出一系列小模型完全不具备的能力，这些”涌现”现象背后有哪些理论解释？本文梳理三个核心概念。">
+<meta property="og:description" content="大模型展现出一系列小模型完全不具备的能力，这些&quot;涌现&quot;现象背后有哪些理论解释？本文梳理三个核心概念。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-05-04T07:00:00.000Z">
-<meta property="article:modified_time" content="2026-05-05T09:24:52.433Z">
+<meta property="article:modified_time" content="2026-05-05T09:33:18.523Z">
 <meta property="article:author" content="tandy">
 <meta property="article:tag" content="大模型">
 <meta property="article:tag" content="涌现能力">
@@ -51,6 +51,8 @@
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
 
 
 
@@ -333,7 +335,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          1.6k 字
+          1.8k 字
         
       </span>
     
@@ -344,7 +346,7 @@
         
         
         
-          14 分钟
+          16 分钟
         
       </span>
     
@@ -397,12 +399,13 @@
             
               <div class="markdown-body">
                 
-                <p>大模型展现出一系列小模型完全不具备的能力，这些”涌现”现象背后有哪些理论解释？本文梳理三个核心概念。</p>
+                <p>大模型展现出一系列小模型完全不具备的能力，这些&quot;涌现&quot;现象背后有哪些理论解释？本文梳理三个核心概念。</p>
 <span id="more"></span>
-<h2 id="1-涌现能力（Emergent-Abilities）"><a href="#1-涌现能力（Emergent-Abilities）" class="headerlink" title="1. 涌现能力（Emergent Abilities）"></a>1. 涌现能力（Emergent Abilities）</h2><h3 id="1-1-什么是涌现"><a href="#1-1-什么是涌现" class="headerlink" title="1.1 什么是涌现"></a>1.1 什么是涌现</h3><p>Wei et al. (2022) 发现：某些能力在模型规模低于某个阈值时<strong>几乎为零</strong>，超过阈值后<strong>突然出现</strong>。</p>
+<h2 id="1-涌现能力（Emergent-Abilities）">1. 涌现能力（Emergent Abilities）</h2>
+<h3 id="1-1-什么是涌现">1.1 什么是涌现</h3>
+<p>Wei et al. (2022) 发现：某些能力在模型规模低于某个阈值时<strong>几乎为零</strong>，超过阈值后<strong>突然出现</strong>。</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs">准确率<br>  │<br>1 │                    ╭──────────────<br>  │                   ╱<br>  │                  ╱<br>  │                 ╱<br>0 │────────────────╯<br>  └──────────────────────────────────→ 参数量<br>              ↑<br>           涌现阈值<br></code></pre></td></tr></table></figure>
 <p><strong>典型涌现能力：</strong></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -429,34 +432,49 @@
 </tr>
 </tbody>
 </table>
-</div>
-<h3 id="1-2-涌现的理论解释"><a href="#1-2-涌现的理论解释" class="headerlink" title="1.2 涌现的理论解释"></a>1.2 涌现的理论解释</h3><p><strong>假说一：评估指标的非线性</strong><br>某些任务用离散指标（如完全正确率）评估，模型能力是连续提升的，但指标在阈值处突然跳变。</p>
-<p><strong>假说二：多步骤组合</strong><br>复杂任务需要多个子能力同时具备，每个子能力的概率为 $p$，$k$ 步全对的概率为 $p^k$，当 $p$ 从 0.9 提升到 0.99 时，$p^{10}$ 从 0.35 跳升到 0.90。</p>
+<h3 id="1-2-涌现的理论解释">1.2 涌现的理论解释</h3>
+<p><strong>假说一：评估指标的非线性</strong><br>
+某些任务用离散指标（如完全正确率）评估，模型能力是连续提升的，但指标在阈值处突然跳变。</p>
+<p><strong>假说二：多步骤组合</strong><br>
+复杂任务需要多个子能力同时具备，每个子能力的概率为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi></mrow><annotation encoding="application/x-tex">p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal">p</span></span></span></span>，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span> 步全对的概率为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>p</mi><mi>k</mi></msup></mrow><annotation encoding="application/x-tex">p^k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.043548em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.849108em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span></span></span></span></span></span></span></span>，当 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi></mrow><annotation encoding="application/x-tex">p</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathnormal">p</span></span></span></span> 从 0.9 提升到 0.99 时，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>p</mi><mn>10</mn></msup></mrow><annotation encoding="application/x-tex">p^{10}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.008548em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mord mtight">0</span></span></span></span></span></span></span></span></span></span></span></span> 从 0.35 跳升到 0.90。</p>
 <hr>
-<h2 id="2-思维链（Chain-of-Thought-CoT）"><a href="#2-思维链（Chain-of-Thought-CoT）" class="headerlink" title="2. 思维链（Chain-of-Thought, CoT）"></a>2. 思维链（Chain-of-Thought, CoT）</h2><h3 id="2-1-核心思想"><a href="#2-1-核心思想" class="headerlink" title="2.1 核心思想"></a>2.1 核心思想</h3><p>普通提示：<br><figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs tap">问：Roger 有<span class="hljs-number"> 5 </span>个网球，买了<span class="hljs-number"> 2 </span>罐，每罐<span class="hljs-number"> 3 </span>个，共几个？<br>答：11<br></code></pre></td></tr></table></figure></p>
-<p>思维链提示：<br><figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs tap">问：Roger 有<span class="hljs-number"> 5 </span>个网球，买了<span class="hljs-number"> 2 </span>罐，每罐<span class="hljs-number"> 3 </span>个，共几个？<br>答：Roger 开始有<span class="hljs-number"> 5 </span>个。2 罐 × 每罐<span class="hljs-number"> 3 </span>个 =<span class="hljs-number"> 6 </span>个。<br>   <span class="hljs-number"> 5 </span>+<span class="hljs-number"> 6 </span>=<span class="hljs-number"> 11 </span>个。答案是 11。<br></code></pre></td></tr></table></figure></p>
+<h2 id="2-思维链（Chain-of-Thought-CoT）">2. 思维链（Chain-of-Thought, CoT）</h2>
+<h3 id="2-1-核心思想">2.1 核心思想</h3>
+<p>普通提示：</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs tap">问：Roger 有<span class="hljs-number"> 5 </span>个网球，买了<span class="hljs-number"> 2 </span>罐，每罐<span class="hljs-number"> 3 </span>个，共几个？<br>答：11<br></code></pre></td></tr></table></figure>
+<p>思维链提示：</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs tap">问：Roger 有<span class="hljs-number"> 5 </span>个网球，买了<span class="hljs-number"> 2 </span>罐，每罐<span class="hljs-number"> 3 </span>个，共几个？<br>答：Roger 开始有<span class="hljs-number"> 5 </span>个。2 罐 × 每罐<span class="hljs-number"> 3 </span>个 =<span class="hljs-number"> 6 </span>个。<br>   <span class="hljs-number"> 5 </span>+<span class="hljs-number"> 6 </span>=<span class="hljs-number"> 11 </span>个。答案是 11。<br></code></pre></td></tr></table></figure>
 <p>在 PaLM 540B 上，CoT 将数学推理准确率从 <strong>17% 提升到 58%</strong>。</p>
-<h3 id="2-2-Zero-shot-CoT"><a href="#2-2-Zero-shot-CoT" class="headerlink" title="2.2 Zero-shot CoT"></a>2.2 Zero-shot CoT</h3><p>Kojima et al. (2022) 发现只需在问题后加一句话：</p>
+<h3 id="2-2-Zero-shot-CoT">2.2 Zero-shot CoT</h3>
+<p>Kojima et al. (2022) 发现只需在问题后加一句话：</p>
 <blockquote>
 <p><strong>“Let’s think step by step.”</strong></p>
 </blockquote>
 <p>就能激活模型的推理能力，无需任何示例。</p>
-<h3 id="2-3-为什么-CoT-有效？"><a href="#2-3-为什么-CoT-有效？" class="headerlink" title="2.3 为什么 CoT 有效？"></a>2.3 为什么 CoT 有效？</h3><p><strong>计算深度假说：</strong> Transformer 的层数决定了”计算步骤数”。直接输出答案相当于用固定层数解决任意复杂问题；CoT 将中间步骤写出来，等效于增加了计算深度。</p>
-<p>形式化：设问题复杂度为 $C$，模型层数为 $L$：</p>
+<h3 id="2-3-为什么-CoT-有效？">2.3 为什么 CoT 有效？</h3>
+<p><strong>计算深度假说：</strong> Transformer 的层数决定了&quot;计算步骤数&quot;。直接输出答案相当于用固定层数解决任意复杂问题；CoT 将中间步骤写出来，等效于增加了计算深度。</p>
+<p>形式化：设问题复杂度为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi></mrow><annotation encoding="application/x-tex">C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span></span></span>，模型层数为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi></mrow><annotation encoding="application/x-tex">L</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal">L</span></span></span></span>：</p>
 <ul>
-<li>无 CoT：需要 $L \geq C$</li>
-<li>有 CoT（$k$ 步）：每步只需 $L \geq C/k$</li>
+<li>无 CoT：需要 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>≥</mo><mi>C</mi></mrow><annotation encoding="application/x-tex">L \geq C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8193em;vertical-align:-0.13597em;"></span><span class="mord mathnormal">L</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≥</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span></span></span></li>
+<li>有 CoT（<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span> 步）：每步只需 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>≥</mo><mi>C</mi><mi mathvariant="normal">/</mi><mi>k</mi></mrow><annotation encoding="application/x-tex">L \geq C/k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8193em;vertical-align:-0.13597em;"></span><span class="mord mathnormal">L</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≥</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mord">/</span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span></li>
 </ul>
 <hr>
-<h2 id="3-In-Context-Learning（ICL）"><a href="#3-In-Context-Learning（ICL）" class="headerlink" title="3. In-Context Learning（ICL）"></a>3. In-Context Learning（ICL）</h2><h3 id="3-1-定义"><a href="#3-1-定义" class="headerlink" title="3.1 定义"></a>3.1 定义</h3><p>ICL 指模型在<strong>不更新任何参数</strong>的情况下，仅通过 prompt 中的示例学会新任务：</p>
+<h2 id="3-In-Context-Learning（ICL）">3. In-Context Learning（ICL）</h2>
+<h3 id="3-1-定义">3.1 定义</h3>
+<p>ICL 指模型在<strong>不更新任何参数</strong>的情况下，仅通过 prompt 中的示例学会新任务：</p>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ruby">示例<span class="hljs-number">1</span>：输入: <span class="hljs-string">&quot;我很开心&quot;</span> → 输出: 正面<br>示例<span class="hljs-number">2</span>：输入: <span class="hljs-string">&quot;今天真糟糕&quot;</span> → 输出: 负面<br>示例<span class="hljs-number">3</span>：输入: <span class="hljs-string">&quot;这部电影太棒了&quot;</span> → 输出: <span class="hljs-string">??</span>?<br></code></pre></td></tr></table></figure>
-<p>模型直接输出”正面”，无需任何梯度更新。</p>
-<h3 id="3-2-ICL-的理论解释"><a href="#3-2-ICL-的理论解释" class="headerlink" title="3.2 ICL 的理论解释"></a>3.2 ICL 的理论解释</h3><p><strong>梯度下降等价假说（Akyürek et al., 2022）：</strong></p>
+<p>模型直接输出&quot;正面&quot;，无需任何梯度更新。</p>
+<h3 id="3-2-ICL-的理论解释">3.2 ICL 的理论解释</h3>
+<p><strong>梯度下降等价假说（Akyürek et al., 2022）：</strong></p>
 <p>Transformer 的前向传播在数学上等价于在隐空间执行梯度下降：</p>
-<script type="math/tex; mode=display">W_{\text{ICL}} \approx W_0 - \eta \sum_{i=1}^k \nabla_W \mathcal{L}(x_i, y_i)</script><p>即：示例相当于隐式地更新了模型的”工作记忆”中的权重。</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>W</mi><mtext>ICL</mtext></msub><mo>≈</mo><msub><mi>W</mi><mn>0</mn></msub><mo>−</mo><mi>η</mi><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>k</mi></munderover><msub><mi mathvariant="normal">∇</mi><mi>W</mi></msub><mi mathvariant="script">L</mi><mo stretchy="false">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo separator="true">,</mo><msub><mi>y</mi><mi>i</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">W_{\text{ICL}} \approx W_0 - \eta \sum_{i=1}^k \nabla_W \mathcal{L}(x_i, y_i)
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">ICL</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:3.1137820000000005em;vertical-align:-1.277669em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">η</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.8361130000000003em;"><span style="top:-1.872331em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.050005em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span><span style="top:-4.3000050000000005em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.277669em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord">∇</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">W</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathcal">L</span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></p>
+<p>即：示例相当于隐式地更新了模型的&quot;工作记忆&quot;中的权重。</p>
 <p><strong>贝叶斯推断假说：</strong></p>
-<script type="math/tex; mode=display">P(y|x, \text{示例}) \propto P(\text{示例}|y, x) \cdot P(y|x)</script><p>模型通过示例更新对任务的后验概率估计。</p>
-<h3 id="3-3-影响-ICL-效果的因素"><a href="#3-3-影响-ICL-效果的因素" class="headerlink" title="3.3 影响 ICL 效果的因素"></a>3.3 影响 ICL 效果的因素</h3><div class="table-container">
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mi>y</mi><mi mathvariant="normal">∣</mi><mi>x</mi><mo separator="true">,</mo><mtext>示例</mtext><mo stretchy="false">)</mo><mo>∝</mo><mi>P</mi><mo stretchy="false">(</mo><mtext>示例</mtext><mi mathvariant="normal">∣</mi><mi>y</mi><mo separator="true">,</mo><mi>x</mi><mo stretchy="false">)</mo><mo>⋅</mo><mi>P</mi><mo stretchy="false">(</mo><mi>y</mi><mi mathvariant="normal">∣</mi><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">P(y|x, \text{示例}) \propto P(\text{示例}|y, x) \cdot P(y|x)
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mord">∣</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord text"><span class="mord cjk_fallback">示例</span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∝</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord text"><span class="mord cjk_fallback">示例</span></span><span class="mord">∣</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mord">∣</span><span class="mord mathnormal">x</span><span class="mclose">)</span></span></span></span></span></p>
+<p>模型通过示例更新对任务的后验概率估计。</p>
+<h3 id="3-3-影响-ICL-效果的因素">3.3 影响 ICL 效果的因素</h3>
 <table>
 <thead>
 <tr>
@@ -483,14 +501,15 @@
 </tr>
 </tbody>
 </table>
-</div>
 <hr>
-<h2 id="4-三者的关系"><a href="#4-三者的关系" class="headerlink" title="4. 三者的关系"></a>4. 三者的关系</h2><figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs excel">规模提升<br>    │<br>    ├──→ 涌现能力（能力突然出现）<br>    │<br>    ├──→ ICL 能力（从示例中学习）<br>    │<br>    └──→ <span class="hljs-built_in">CoT</span> 能力（逐步推理）<br>              │<br>              └──→ 更强的 ICL（推理示例更有效）<br></code></pre></td></tr></table></figure>
-<p>这三种能力相互增强，共同构成了大模型”智能”的核心。</p>
+<h2 id="4-三者的关系">4. 三者的关系</h2>
+<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs excel">规模提升<br>    │<br>    ├──→ 涌现能力（能力突然出现）<br>    │<br>    ├──→ ICL 能力（从示例中学习）<br>    │<br>    └──→ <span class="hljs-built_in">CoT</span> 能力（逐步推理）<br>              │<br>              └──→ 更强的 ICL（推理示例更有效）<br></code></pre></td></tr></table></figure>
+<p>这三种能力相互增强，共同构成了大模型&quot;智能&quot;的核心。</p>
 <hr>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<h2 id="总结">总结</h2>
+<ul>
 <li><strong>涌现</strong>：规模带来质变，不是量变的简单累积</li>
-<li><strong>CoT</strong>：让模型”说出思考过程”，等效增加计算深度</li>
+<li><strong>CoT</strong>：让模型&quot;说出思考过程&quot;，等效增加计算深度</li>
 <li><strong>ICL</strong>：无需微调，prompt 即是程序</li>
 </ul>
 <p>这三个现象都指向同一个结论：<strong>规模是通往智能的关键路径之一</strong>，但我们对其背后机制的理解仍然有限。</p>
@@ -666,7 +685,6 @@
 
 
 
-
     
 
     
@@ -699,12 +717,6 @@
 
     
 
-    
-      <div class="col-lg-7 mx-auto nopadding-x-md">
-        <div class="container custom mx-auto">
-          <script>window.MathJax = {tex: {inlineMath: [["$","$"],["\\(","\\)"]]}};</script>
-        </div>
-      </div>
     
   </main>
 
@@ -948,49 +960,6 @@
 
 
   <script>Fluid.plugins.imageCaption();</script>
-
-  
-      <script>
-        if (!window.MathJax) {
-          window.MathJax = {
-            tex    : {
-              inlineMath: { '[+]': [['$', '$']] }
-            },
-            loader : {
-              load: ['ui/lazy']
-            },
-            options: {
-              renderActions: {
-                insertedScript: [200, () => {
-                  document.querySelectorAll('mjx-container').forEach(node => {
-                    let target = node.parentNode;
-                    if (target.nodeName.toLowerCase() === 'li') {
-                      target.parentNode.classList.add('has-jax');
-                    }
-                  });
-                }, '', false]
-              }
-            }
-          };
-        } else {
-          MathJax.startup.document.state(0);
-          MathJax.texReset();
-          MathJax.typeset();
-          MathJax.typesetPromise();
-        }
-
-        Fluid.events.registerRefreshCallback(function() {
-          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
-            MathJax.startup.document.state(0);
-            MathJax.texReset();
-            MathJax.typeset();
-            MathJax.typesetPromise();
-          }
-        });
-      </script>
-    
-
-  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
 
   <script  src="/js/local-search.js" ></script>
 
