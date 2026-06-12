@@ -167,18 +167,6 @@ box-shadow:0 4px 20px rgba(99,102,241,.4)<br>
 </head>
 <body>
 <div class="app">
-  <div class="hero">
-    <div class="hero-badge">✦ Quiz System</div>
-    <h1 id="刷题练习">刷题练习</h1>
-    <p class="hero-sub">系统性掌握知识点，告别死记硬背</p>
-    <div class="stats-row">
-      <div class="stat-pill"><span class="num">269</span><span class="lbl">题目总数</span></div>
-      <div class="stat-pill"><span class="num">18</span><span class="lbl">章节覆盖</span></div>
-      <div class="stat-pill"><span class="num">3</span><span class="lbl">练习模式</span></div>
-    </div>
-  </div>
-  <div class="divider"></div>
-  <p class="subtitle"></p>
   <div id="root"></div>
 </div>
 <script></script>
@@ -223,7 +211,7 @@ else if (state.mode === ‘wrong’) root.innerHTML = renderWrong();<br>
 else if (state.mode === ‘result’) root.innerHTML = renderResult();<br>
 }</p>
 <p>function renderMenu() {<br>
-return <code>     &lt;div class=&quot;menu&quot;&gt;       &lt;div class=&quot;menu-card&quot; onclick=&quot;startStudy()&quot;&gt;         &lt;span class=&quot;icon&quot;&gt;📖&lt;/span&gt;         &lt;h3&gt;背题模式&lt;/h3&gt;         &lt;p&gt;按章节顺序浏览，点击显示答案与解析&lt;/p&gt;         &lt;span class=&quot;card-tag&quot;&gt;顺序学习&lt;/span&gt;       &lt;/div&gt;       &lt;div class=&quot;menu-card&quot; onclick=&quot;startRandom()&quot;&gt;         &lt;span class=&quot;icon&quot;&gt;🎲&lt;/span&gt;         &lt;h3&gt;随机刷题&lt;/h3&gt;         &lt;p&gt;四选一智能出题，即时反馈对错&lt;/p&gt;         &lt;span class=&quot;card-tag&quot;&gt;强化训练&lt;/span&gt;       &lt;/div&gt;       &lt;div class=&quot;menu-card&quot; onclick=&quot;startWrong()&quot;&gt;         &lt;span class=&quot;icon&quot;&gt;❌&lt;/span&gt;         &lt;h3&gt;错题本 &lt;span class=&quot;wrong-count&quot;&gt;$&#123;state.wrongIds.length&#125;&lt;/span&gt;&lt;/h3&gt;         &lt;p&gt;集中复习所有做错的题目&lt;/p&gt;         &lt;span class=&quot;card-tag&quot;&gt;查漏补缺&lt;/span&gt;       &lt;/div&gt;       &lt;div class=&quot;menu-card&quot; onclick=&quot;window.location.href='/'&quot;&gt;         &lt;span class=&quot;icon&quot;&gt;🏠&lt;/span&gt;         &lt;h3&gt;返回博客&lt;/h3&gt;         &lt;p&gt;回到 Tandy's Blog 首页&lt;/p&gt;         &lt;span class=&quot;card-tag&quot; style=&quot;background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.2);color:#34d399&quot;&gt;← 返回&lt;/span&gt;       &lt;/div&gt;     &lt;/div&gt;</code>;<br>
+return <code>     &lt;div class=&quot;hero&quot;&gt;       &lt;div class=&quot;hero-badge&quot;&gt;✦ Quiz System&lt;/div&gt;       &lt;h1&gt;刷题练习&lt;/h1&gt;       &lt;p class=&quot;hero-sub&quot;&gt;系统性掌握知识点，告别死记硬背&lt;/p&gt;       &lt;div class=&quot;stats-row&quot;&gt;         &lt;div class=&quot;stat-pill&quot;&gt;&lt;span class=&quot;num&quot;&gt;269&lt;/span&gt;&lt;span class=&quot;lbl&quot;&gt;题目总数&lt;/span&gt;&lt;/div&gt;         &lt;div class=&quot;stat-pill&quot;&gt;&lt;span class=&quot;num&quot;&gt;18&lt;/span&gt;&lt;span class=&quot;lbl&quot;&gt;章节覆盖&lt;/span&gt;&lt;/div&gt;         &lt;div class=&quot;stat-pill&quot;&gt;&lt;span class=&quot;num&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;lbl&quot;&gt;练习模式&lt;/span&gt;&lt;/div&gt;       &lt;/div&gt;     &lt;/div&gt;     &lt;div class=&quot;divider&quot;&gt;&lt;/div&gt;     &lt;div class=&quot;menu&quot;&gt;       &lt;div class=&quot;menu-card&quot; onclick=&quot;startStudy()&quot;&gt;         &lt;span class=&quot;icon&quot;&gt;📖&lt;/span&gt;         &lt;h3&gt;背题模式&lt;/h3&gt;         &lt;p&gt;按章节顺序浏览，点击显示答案与解析&lt;/p&gt;         &lt;span class=&quot;card-tag&quot;&gt;顺序学习&lt;/span&gt;       &lt;/div&gt;       &lt;div class=&quot;menu-card&quot; onclick=&quot;startRandom()&quot;&gt;         &lt;span class=&quot;icon&quot;&gt;🎲&lt;/span&gt;         &lt;h3&gt;随机刷题&lt;/h3&gt;         &lt;p&gt;四选一智能出题，即时反馈对错&lt;/p&gt;         &lt;span class=&quot;card-tag&quot;&gt;强化训练&lt;/span&gt;       &lt;/div&gt;       &lt;div class=&quot;menu-card&quot; onclick=&quot;startWrong()&quot;&gt;         &lt;span class=&quot;icon&quot;&gt;❌&lt;/span&gt;         &lt;h3&gt;错题本 &lt;span class=&quot;wrong-count&quot;&gt;$&#123;state.wrongIds.length&#125;&lt;/span&gt;&lt;/h3&gt;         &lt;p&gt;集中复习所有做错的题目&lt;/p&gt;         &lt;span class=&quot;card-tag&quot;&gt;查漏补缺&lt;/span&gt;       &lt;/div&gt;       &lt;div class=&quot;menu-card&quot; onclick=&quot;window.location.href='/'&quot;&gt;         &lt;span class=&quot;icon&quot;&gt;🏠&lt;/span&gt;         &lt;h3&gt;返回博客&lt;/h3&gt;         &lt;p&gt;回到 Tandy's Blog 首页&lt;/p&gt;         &lt;span class=&quot;card-tag&quot; style=&quot;background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.2);color:#34d399&quot;&gt;← 返回&lt;/span&gt;       &lt;/div&gt;     &lt;/div&gt;</code>;<br>
 }</p>
 <p>function renderStudy() {<br>
 const q = state.filteredQ[state.currentIndex];<br>
