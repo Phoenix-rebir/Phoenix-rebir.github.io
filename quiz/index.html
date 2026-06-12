@@ -6,338 +6,296 @@
 <title>刷题练习 - Tandy's Blog</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0f1e;color:#e2e8f0;min-height:100vh;
+  background-image:radial-gradient(ellipse at 20% 50%,rgba(56,189,248,.07) 0,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(99,102,241,.07) 0,transparent 50%)}
 .app{max-width:800px;margin:0 auto;padding:20px}
-h1{text-align:center;padding:24px 0 8px;font-size:1.6rem;color:#7dd3fc}
-.subtitle{text-align:center;color:#94a3b8;font-size:.9rem;margin-bottom:24px}
+h1{text-align:center;padding:24px 0 8px;font-size:1.6rem;background:linear-gradient(135deg,#7dd3fc,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{text-align:center;color:#64748b;font-size:.88rem;margin-bottom:28px}
+<p>/* 玻璃卡片基础 */<br>
+.glass{background:rgba(255,255,255,.04);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08);border-radius:16px}</p>
 <p>/* 主菜单 */<br>
-.menu{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}<br>
-.menu-card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;cursor:pointer;text-align:center;transition:all .2s}<br>
-.menu-card:hover{border-color:#7dd3fc;background:#1e3a5f}<br>
-.menu-card .icon{font-size:2.4rem;margin-bottom:10px}<br>
-.menu-card h3{font-size:1.1rem;color:#e2e8f0;margin-bottom:6px}<br>
-.menu-card p{font-size:.85rem;color:#94a3b8}<br>
-.wrong-count{background:#ef4444;color:#fff;font-size:.75rem;padding:2px 8px;border-radius:999px;margin-left:6px}</p>
+.menu{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}<br>
+.menu-card{padding:24px;cursor:pointer;text-align:center;transition:all .25s;border-radius:16px;<br>
+background:rgba(255,255,255,.04);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08)}<br>
+.menu-card:hover{border-color:rgba(125,211,252,.4);background:rgba(125,211,252,.06);transform:translateY(-2px);box-shadow:0 8px 32px rgba(125,211,252,.1)}<br>
+.menu-card .icon{font-size:2.2rem;margin-bottom:10px}<br>
+.menu-card h3{font-size:1rem;color:#e2e8f0;margin-bottom:5px}<br>
+.menu-card p{font-size:.82rem;color:#64748b}<br>
+.wrong-count{background:rgba(239,68,68,.8);color:#fff;font-size:.72rem;padding:2px 7px;border-radius:999px;margin-left:5px}</p>
 <p>/* 周次选择 */<br>
-.week-selector{margin-bottom:20px}<br>
-.week-selector select{width:100%;padding:10px 14px;background:#1e293b;border:1px solid #334155;border-radius:8px;color:#e2e8f0;font-size:.95rem;cursor:pointer}</p>
+.week-selector{margin-bottom:16px}<br>
+.week-selector select{width:100%;padding:10px 14px;background:rgba(255,255,255,.04);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:#e2e8f0;font-size:.9rem;cursor:pointer}<br>
+.week-selector select option{background:#0f172a}</p>
 <p>/* 题目卡片 */<br>
-.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;margin-bottom:16px}<br>
-.progress{display:flex;align-items:center;gap:12px;margin-bottom:20px}<br>
-.progress-bar{flex:1;height:6px;background:#334155;border-radius:3px}<br>
-.progress-fill{height:100%;background:#7dd3fc;border-radius:3px;transition:width .3s}<br>
-.progress-text{font-size:.85rem;color:#94a3b8;white-space:nowrap}<br>
-.week-tag{display:inline-block;font-size:.78rem;color:#7dd3fc;background:#1e3a5f;padding:3px 10px;border-radius:999px;margin-bottom:14px}<br>
-.question{font-size:1.05rem;line-height:1.7;color:#e2e8f0;margin-bottom:20px}</p>
-<p>/* 答案区 */<br>
+.card{padding:24px;margin-bottom:14px;border-radius:16px;<br>
+background:rgba(255,255,255,.04);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08)}<br>
+.progress{display:flex;align-items:center;gap:12px;margin-bottom:18px}<br>
+.progress-bar{flex:1;height:4px;background:rgba(255,255,255,.08);border-radius:2px}<br>
+.progress-fill{height:100%;background:linear-gradient(90deg,#7dd3fc,#818cf8);border-radius:2px;transition:width .4s ease}<br>
+.progress-text{font-size:.82rem;color:#64748b;white-space:nowrap}<br>
+.week-tag{display:inline-block;font-size:.75rem;color:#7dd3fc;background:rgba(125,211,252,.1);border:1px solid rgba(125,211,252,.2);padding:3px 10px;border-radius:999px;margin-bottom:14px}<br>
+.question{font-size:1.05rem;line-height:1.75;color:#e2e8f0;margin-bottom:22px}</p>
+<p>/* ===== 选项卡片 ===== */<br>
+.options{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}<br>
+.option{<br>
+display:flex;align-items:center;gap:14px;padding:13px 16px;cursor:pointer;<br>
+border-radius:12px;border:1px solid rgba(255,255,255,.1);<br>
+background:rgba(255,255,255,.03);backdrop-filter:blur(12px);<br>
+transition:all .2s;position:relative;overflow:hidden;<br>
+}<br>
+.option::before{content:‘’;position:absolute;inset:0;opacity:0;transition:opacity .2s}<br>
+.option:hover:not(.disabled){border-color:rgba(99,102,241,.5);background:rgba(99,102,241,.08)}<br>
+.option:hover:not(.disabled) .opt-check{border-color:rgba(99,102,241,.8)}</p>
+<p>/* 复选框 */<br>
+.opt-check{<br>
+width:22px;height:22px;border-radius:6px;flex-shrink:0;<br>
+border:2px solid rgba(255,255,255,.2);<br>
+background:rgba(255,255,255,.04);backdrop-filter:blur(8px);<br>
+display:flex;align-items:center;justify-content:center;<br>
+transition:all .2s;font-size:.85rem;<br>
+}<br>
+.opt-text{font-size:.95rem;color:#cbd5e1;flex:1;line-height:1.5}<br>
+.opt-letter{font-size:.8rem;color:#64748b;font-weight:600;min-width:18px}</p>
+<p>/* 选中状态（待确认）- 蓝色 */<br>
+.option.selected{border-color:rgba(99,102,241,.7);background:rgba(99,102,241,.1)}<br>
+.option.selected .opt-check{background:rgba(99,102,241,.8);border-color:#818cf8;box-shadow:0 0 12px rgba(99,102,241,.4)}<br>
+.option.selected .opt-check::after{content:‘✓’;color:#fff;font-size:.75rem}<br>
+.option.selected .opt-text{color:#e2e8f0}</p>
+<p>/* 正确答案 - 绿色 */<br>
+.option.correct{border-color:rgba(52,211,153,.7);background:rgba(52,211,153,.08)}<br>
+.option.correct .opt-check{background:rgba(52,211,153,.8);border-color:#34d399;box-shadow:0 0 14px rgba(52,211,153,.35)}<br>
+.option.correct .opt-check::after{content:‘✓’;color:#fff;font-size:.75rem}<br>
+.option.correct .opt-text{color:#6ee7b7}</p>
+<p>/* 错误选项 - 红色 */<br>
+.option.wrong{border-color:rgba(239,68,68,.6);background:rgba(239,68,68,.08)}<br>
+.option.wrong .opt-check{background:rgba(239,68,68,.75);border-color:#ef4444;box-shadow:0 0 12px rgba(239,68,68,.3)}<br>
+.option.wrong .opt-check::after{content:‘✗’;color:#fff;font-size:.75rem}<br>
+.option.wrong .opt-text{color:#fca5a5}</p>
+<p>.option.disabled{cursor:default}</p>
+<p>/* 答案解析框 */<br>
+.explanation-box{<br>
+margin-top:14px;padding:14px 16px;border-radius:10px;<br>
+background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.2);<br>
+font-size:.88rem;color:#94a3b8;line-height:1.65;<br>
+animation:fadeIn .3s ease<br>
+}<br>
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}</p>
+<p>/* 背题模式答案区 */<br>
 .answer-area{position:relative}<br>
-.answer-blur{filter:blur(6px);user-select:none;transition:filter .3s}<br>
+.answer-blur{filter:blur(7px);user-select:none;transition:filter .3s}<br>
 .answer-visible{filter:none}<br>
-.answer-box{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:16px}<br>
-.answer-label{font-size:.8rem;color:#94a3b8;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}<br>
+.answer-box{background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.15);border-radius:10px;padding:16px}<br>
+.answer-label{font-size:.75rem;color:#64748b;margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}<br>
 .answer-text{font-size:1rem;color:#34d399;font-weight:500}<br>
-.answer-letter{display:inline-block;background:#064e3b;color:#34d399;border-radius:6px;padding:2px 10px;margin-right:8px;font-weight:700}<br>
-.explanation{margin-top:12px;font-size:.9rem;color:#94a3b8;line-height:1.6;border-top:1px solid #334155;padding-top:12px}</p>
-<p>/* 遮罩按钮 */<br>
-.reveal-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#3b82f6;color:#fff;border:none;padding:10px 24px;border-radius:8px;cursor:pointer;font-size:.95rem;z-index:10}<br>
-.reveal-btn:hover{background:#2563eb}</p>
+.answer-letter{display:inline-block;background:rgba(52,211,153,.2);color:#34d399;border-radius:6px;padding:2px 10px;margin-right:8px;font-weight:700}<br>
+.explanation{margin-top:12px;font-size:.88rem;color:#64748b;line-height:1.6;border-top:1px solid rgba(255,255,255,.06);padding-top:12px}<br>
+.reveal-btn{<br>
+position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);<br>
+background:linear-gradient(135deg,#3b82f6,#6366f1);color:#fff;border:none;<br>
+padding:10px 26px;border-radius:10px;cursor:pointer;font-size:.9rem;z-index:10;<br>
+box-shadow:0 4px 20px rgba(99,102,241,.4)<br>
+}<br>
+.reveal-btn:hover{opacity:.9;box-shadow:0 6px 24px rgba(99,102,241,.5)}</p>
 <p>/* 操作按钮 */<br>
 .actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}<br>
-.btn{padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-size:.9rem;font-weight:500;flex:1;min-width:100px}<br>
-.btn-primary{background:#3b82f6;color:#fff}<br>
-.btn-primary:hover{background:#2563eb}<br>
-.btn-success{background:#10b981;color:#fff}<br>
-.btn-success:hover{background:#059669}<br>
-.btn-danger{background:#ef4444;color:#fff}<br>
-.btn-danger:hover{background:#dc2626}<br>
-.btn-ghost{background:#334155;color:#e2e8f0}<br>
-.btn-ghost:hover{background:#475569}</p>
-<p>/* 背题模式 */<br>
-.study-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}<br>
-.study-nav span{font-size:.9rem;color:#94a3b8}</p>
+.btn{padding:10px 20px;border:none;border-radius:10px;cursor:pointer;font-size:.88rem;font-weight:500;flex:1;min-width:90px;transition:all .2s}<br>
+.btn-primary{background:linear-gradient(135deg,#3b82f6,#6366f1);color:#fff;box-shadow:0 4px 14px rgba(99,102,241,.3)}<br>
+.btn-primary:hover{opacity:.9;box-shadow:0 6px 18px rgba(99,102,241,.4)}<br>
+.btn-success{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 4px 14px rgba(16,185,129,.25)}<br>
+.btn-success:hover{opacity:.9}<br>
+.btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;box-shadow:0 4px 14px rgba(239,68,68,.25)}<br>
+.btn-danger:hover{opacity:.9}<br>
+.btn-ghost{background:rgba(255,255,255,.06);color:#94a3b8;border:1px solid rgba(255,255,255,.1)}<br>
+.btn-ghost:hover{background:rgba(255,255,255,.1);color:#e2e8f0}<br>
+.btn:disabled{opacity:.35;cursor:not-allowed}</p>
 <p>/* 错题本 */<br>
 .wrong-list{display:flex;flex-direction:column;gap:12px}<br>
-.wrong-item{background:#1e293b;border:1px solid #7f1d1d;border-radius:10px;padding:16px}<br>
-.wrong-q{font-size:.95rem;color:#e2e8f0;margin-bottom:8px}<br>
-.wrong-a{font-size:.88rem;color:#34d399}<br>
-.wrong-exp{font-size:.83rem;color:#94a3b8;margin-top:6px}<br>
-.empty-state{text-align:center;padding:60px 20px;color:#475569}<br>
+.wrong-item{padding:16px;border-radius:12px;background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.15)}<br>
+.wrong-q{font-size:.93rem;color:#e2e8f0;margin-bottom:8px}<br>
+.wrong-a{font-size:.87rem;color:#34d399}<br>
+.wrong-exp{font-size:.82rem;color:#64748b;margin-top:6px}<br>
+.empty-state{text-align:center;padding:60px 20px;color:#334155}<br>
 .empty-state .icon{font-size:3rem;margin-bottom:12px}</p>
 <p>/* 结果页 */<br>
 .result{text-align:center;padding:40px 20px}<br>
-.result-score{font-size:3.5rem;font-weight:700;color:#7dd3fc;margin:16px 0}<br>
-.result-msg{font-size:1.1rem;color:#94a3b8;margin-bottom:24px}<br>
-.result-stats{display:flex;gap:20px;justify-content:center;margin-bottom:28px}<br>
-.stat{background:#0f172a;border-radius:10px;padding:14px 24px;text-align:center}<br>
+.result-score{font-size:3.5rem;font-weight:700;background:linear-gradient(135deg,#7dd3fc,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:16px 0}<br>
+.result-stats{display:flex;gap:16px;justify-content:center;margin-bottom:28px}<br>
+.stat{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px 22px;text-align:center}<br>
 .stat-num{font-size:1.6rem;font-weight:700}<br>
-.stat-label{font-size:.8rem;color:#94a3b8}</p>
-<p>/* 顶部返回 */<br>
-.back-btn{display:flex;align-items:center;gap:6px;background:none;border:none;color:#94a3b8;cursor:pointer;font-size:.9rem;padding:4px 0;margin-bottom:16px}<br>
-.back-btn:hover{color:#e2e8f0}</p>
-<p>/* 随机模式答题 */<br>
-.options-mode .answer-box{cursor:pointer}<br>
+.stat-label{font-size:.78rem;color:#64748b}</p>
+<p>.back-btn{display:flex;align-items:center;gap:6px;background:none;border:none;color:#64748b;cursor:pointer;font-size:.88rem;padding:4px 0;margin-bottom:14px}<br>
+.back-btn:hover{color:#e2e8f0}<br>
 </style></p>
 </head>
 <body>
 <div class="app">
   <h1 id="📚-刷题练习">📚 刷题练习</h1>
-  <p class="subtitle">共 269 道题 · 支持背题、随机刷题、错题本</p>
+  <p class="subtitle">共 269 道题 · 背题 / 随机刷题 / 错题本</p>
   <div id="root"></div>
 </div>
-<script>
-// ========== 题库数据 ==========
-</script>
+<script></script>
 <script src="questions.js"></script>
 <script>
-// ========== 状态管理 ==========
-const state = {
-  mode: 'menu',       // menu | study | random | wrong
-  currentIndex: 0,
-  revealed: false,
-  wrongIds: JSON.parse(localStorage.getItem('quiz_wrong') || '[]'),
-  studyWeek: 'all',
-  filteredQ: [],
-  randomQ: [],
-  score: { correct: 0, wrong: 0 },
-  finished: false,
-};
-
-const weeks = [...new Set(QUIZ_DATA.map(q => q.week))];
-
-function saveWrong() {
-  localStorage.setItem('quiz_wrong', JSON.stringify(state.wrongIds));
-}
-
-function addWrong(id) {
-  if (!state.wrongIds.includes(id)) { state.wrongIds.push(id); saveWrong(); }
-}
-
-function removeWrong(id) {
-  state.wrongIds = state.wrongIds.filter(x => x !== id); saveWrong();
-}
-
-// ========== 渲染函数 ==========
-function render() {
-  const root = document.getElementById('root');
-  if (state.mode === 'menu') root.innerHTML = renderMenu();
-  else if (state.mode === 'study') root.innerHTML = renderStudy();
-  else if (state.mode === 'random') root.innerHTML = renderRandom();
-  else if (state.mode === 'wrong') root.innerHTML = renderWrong();
-  else if (state.mode === 'result') root.innerHTML = renderResult();
-  bindEvents();
-}
-
-function renderMenu() {
-  return `
-    <div class="menu">
-      <div class="menu-card" onclick="startStudy()">
-        <div class="icon">📖</div>
-        <h3>背题模式</h3>
-        <p>按章节顺序浏览，点击显示答案</p>
-      </div>
-      <div class="menu-card" onclick="startRandom()">
-        <div class="icon">🎲</div>
-        <h3>随机刷题</h3>
-        <p>随机出题，标记对错，查看得分</p>
-      </div>
-      <div class="menu-card" onclick="startWrong()">
-        <div class="icon">❌</div>
-        <h3>错题本 <span class="wrong-count">${state.wrongIds.length}</span></h3>
-        <p>复习所有标记过的错题</p>
-      </div>
-      <div class="menu-card" onclick="window.location.href='/'">
-        <div class="icon">🏠</div>
-        <h3>返回博客</h3>
-        <p>回到首页</p>
-      </div>
-    </div>`;
-}
-
-function renderStudy() {
-  const q = state.filteredQ[state.currentIndex];
-  if (!q) return '<div class="empty-state"><div class="icon">✅</div><p>已浏览全部题目</p></div>';
-  const total = state.filteredQ.length;
-  const pct = ((state.currentIndex + 1) / total * 100).toFixed(0);
-  const isWrong = state.wrongIds.includes(q.id);
-
-  return `
-    <button class="back-btn" onclick="goMenu()">← 返回主菜单</button>
-    <div class="week-selector">
-      <select id="weekSelect" onchange="changeWeek(this.value)">
-        <option value="all" ${state.studyWeek==='all'?'selected':''}>全部章节（共 ${QUIZ_DATA.length} 题）</option>
-        ${weeks.map(w => `<option value="${w}" ${state.studyWeek===w?'selected':''}>${w}（${QUIZ_DATA.filter(q=>q.week===w).length}题）</option>`).join('')}
-      </select>
-    </div>
-    <div class="card">
-      <div class="progress">
-        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-        <span class="progress-text">${state.currentIndex+1} / ${total}</span>
-      </div>
-      <div class="week-tag">${q.week}</div>
-      <div class="question">${state.currentIndex+1}. ${q.question}</div>
-      <div class="answer-area">
-        <div class="answer-box ${state.revealed?'answer-visible':'answer-blur'}">
-          <div class="answer-label">答案</div>
-          <div class="answer-text"><span class="answer-letter">${q.answer_letter}</span>${q.answer}</div>
-          <div class="explanation">${q.explanation}</div>
-        </div>
-        ${!state.revealed ? '<button class="reveal-btn" onclick="reveal()">点击显示答案</button>' : ''}
-      </div>
-      <div class="actions">
-        <button class="btn btn-ghost" onclick="prevQ()" ${state.currentIndex===0?'disabled':''}>← 上一题</button>
-        ${isWrong
-          ? `<button class="btn btn-success" onclick="toggleWrong(${q.id})">✓ 移出错题</button>`
-          : `<button class="btn btn-danger" onclick="toggleWrong(${q.id})">✗ 加入错题</button>`}
-        <button class="btn btn-primary" onclick="nextQ()">下一题 →</button>
-      </div>
-    </div>`;
-}
-
-function renderRandom() {
-  if (state.finished) return renderResult();
-  const q = state.randomQ[state.currentIndex];
-  if (!q) return renderResult();
-  const total = state.randomQ.length;
-  const pct = (state.currentIndex / total * 100).toFixed(0);
-
-  return `
-    <button class="back-btn" onclick="goMenu()">← 返回主菜单</button>
-    <div class="card">
-      <div class="progress">
-        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-        <span class="progress-text">${state.currentIndex+1} / ${total}</span>
-      </div>
-      <div class="week-tag">${q.week}</div>
-      <div class="question">${state.currentIndex+1}. ${q.question}</div>
-      <div class="answer-area">
-        <div class="answer-box ${state.revealed?'answer-visible':'answer-blur'}">
-          <div class="answer-label">答案</div>
-          <div class="answer-text"><span class="answer-letter">${q.answer_letter}</span>${q.answer}</div>
-          <div class="explanation">${q.explanation}</div>
-        </div>
-        ${!state.revealed ? '<button class="reveal-btn" onclick="reveal()">点击显示答案</button>' : ''}
-      </div>
-      ${state.revealed ? `
-      <div class="actions">
-        <button class="btn btn-success" onclick="markCorrect()">✓ 答对了</button>
-        <button class="btn btn-danger" onclick="markWrong()">✗ 答错了</button>
-      </div>` : ''}
-    </div>`;
-}
-
-function renderWrong() {
-  const wrongQs = QUIZ_DATA.filter(q => state.wrongIds.includes(q.id));
-  if (wrongQs.length === 0) return `
-    <button class="back-btn" onclick="goMenu()">← 返回主菜单</button>
-    <div class="empty-state"><div class="icon">🎉</div><p>错题本是空的，继续加油！</p></div>`;
-
-  return `
-    <button class="back-btn" onclick="goMenu()">← 返回主菜单</button>
-    <p style="color:#94a3b8;font-size:.9rem;margin-bottom:14px">共 ${wrongQs.length} 道错题</p>
-    <div class="wrong-list">
-      ${wrongQs.map(q => `
-        <div class="wrong-item">
-          <div style="display:flex;justify-content:space-between;align-items:start;gap:8px">
-            <div class="wrong-q">${q.question}</div>
-            <button onclick="removeWrong(${q.id});render()" style="background:#7f1d1d;border:none;color:#fca5a5;border-radius:6px;padding:3px 8px;cursor:pointer;font-size:.8rem;white-space:nowrap">移除</button>
-          </div>
-          <div class="wrong-a"><span class="answer-letter">${q.answer_letter}</span>${q.answer}</div>
-          <div class="wrong-exp">${q.explanation}</div>
-          <div style="font-size:.78rem;color:#475569;margin-top:6px">${q.week}</div>
-        </div>`).join('')}
-    </div>`;
-}
-
-function renderResult() {
-  const total = state.score.correct + state.score.wrong;
-  const pct = total ? Math.round(state.score.correct / total * 100) : 0;
-  const msg = pct >= 90 ? '🎉 优秀！' : pct >= 70 ? '👍 不错！' : pct >= 50 ? '💪 继续加油！' : '📚 需要多练习';
-  return `
-    <div class="result">
-      <div style="font-size:1.2rem;color:#94a3b8">${msg}</div>
-      <div class="result-score">${pct}%</div>
-      <div class="result-stats">
-        <div class="stat"><div class="stat-num" style="color:#34d399">${state.score.correct}</div><div class="stat-label">答对</div></div>
-        <div class="stat"><div class="stat-num" style="color:#ef4444">${state.score.wrong}</div><div class="stat-label">答错</div></div>
-        <div class="stat"><div class="stat-num" style="color:#7dd3fc">${total}</div><div class="stat-label">总题数</div></div>
-      </div>
-      <div class="actions" style="justify-content:center;max-width:320px;margin:0 auto">
-        <button class="btn btn-primary" onclick="startRandom()">再来一轮</button>
-        <button class="btn btn-ghost" onclick="goMenu()">返回菜单</button>
-      </div>
-    </div>`;
-}
-
-// ========== 交互逻辑 ==========
-function bindEvents() {}
-
-function goMenu() { state.mode = 'menu'; render(); }
-
-function startStudy() {
-  state.mode = 'study';
-  state.studyWeek = 'all';
-  state.filteredQ = [...QUIZ_DATA];
-  state.currentIndex = 0;
-  state.revealed = false;
-  render();
-}
-
-function changeWeek(val) {
-  state.studyWeek = val;
-  state.filteredQ = val === 'all' ? [...QUIZ_DATA] : QUIZ_DATA.filter(q => q.week === val);
-  state.currentIndex = 0;
-  state.revealed = false;
-  render();
-}
-
-function startRandom() {
-  state.mode = 'random';
-  state.randomQ = [...QUIZ_DATA].sort(() => Math.random() - 0.5);
-  state.currentIndex = 0;
-  state.revealed = false;
-  state.score = { correct: 0, wrong: 0 };
-  state.finished = false;
-  render();
-}
-
-function startWrong() { state.mode = 'wrong'; render(); }
-
-function reveal() { state.revealed = true; render(); }
-
-function prevQ() {
-  if (state.currentIndex > 0) { state.currentIndex--; state.revealed = false; render(); }
-}
-
-function nextQ() {
-  if (state.currentIndex < state.filteredQ.length - 1) {
-    state.currentIndex++; state.revealed = false; render();
-  }
-}
-
-function toggleWrong(id) {
-  if (state.wrongIds.includes(id)) removeWrong(id); else addWrong(id);
-  render();
-}
-
-function markCorrect() {
-  state.score.correct++;
-  if (state.currentIndex < state.randomQ.length - 1) {
-    state.currentIndex++; state.revealed = false;
-  } else { state.finished = true; }
-  render();
-}
-
-function markWrong() {
-  addWrong(state.randomQ[state.currentIndex].id);
-  state.score.wrong++;
-  if (state.currentIndex < state.randomQ.length - 1) {
-    state.currentIndex++; state.revealed = false;
-  } else { state.finished = true; }
-  render();
-}
-
-// 初始化
-render();
-</script>
+const LETTERS = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O'];
+<p>const state = {<br>
+mode: ‘menu’,<br>
+currentIndex: 0,<br>
+revealed: false,<br>
+selected: null,       // 随机模式选中的选项索引<br>
+answered: false,      // 随机模式是否已作答<br>
+wrongIds: JSON.parse(localStorage.getItem(‘quiz_wrong’) || ‘[]’),<br>
+studyWeek: ‘all’,<br>
+filteredQ: [],<br>
+randomQ: [],<br>
+randomOpts: [],       // 当前题的选项列表 [{letter,text,isCorrect}]<br>
+score: { correct: 0, wrong: 0 },<br>
+finished: false,<br>
+};</p>
+<p>const weeks = […new Set(QUIZ_DATA.map(q =&gt; q.week))];<br>
+function saveWrong(){ localStorage.setItem(‘quiz_wrong’, JSON.stringify(state.wrongIds)); }<br>
+function addWrong(id){ if(!state.wrongIds.includes(id)){state.wrongIds.push(id);saveWrong();} }<br>
+function removeWrong(id){ state.wrongIds=state.wrongIds.filter(x=&gt;x!==id);saveWrong(); }</p>
+<p>// 为每道题生成选项（1个正确 + 3个干扰项）<br>
+function buildOptions(q, allQ) {<br>
+const correct = { letter: q.answer_letter, text: q.answer, isCorrect: true };<br>
+// 从同 week 优先，再全局随机取干扰项<br>
+const pool = allQ.filter(x =&gt; <a href="http://x.id">x.id</a> !== <a href="http://q.id">q.id</a>);<br>
+const shuffled = pool.sort(() =&gt; Math.random() - 0.5).slice(0, 3);<br>
+const distractors = shuffled.map(x =&gt; ({ letter: x.answer_letter, text: x.answer, isCorrect: false }));<br>
+const opts = [correct, …distractors].sort(() =&gt; Math.random() - 0.5);<br>
+// 重新分配字母 A/B/C/D<br>
+return opts.map((o, i) =&gt; ({ …o, displayLetter: LETTERS[i] }));<br>
+}</p>
+<p>function render() {<br>
+const root = document.getElementById(‘root’);<br>
+if (state.mode === ‘menu’) root.innerHTML = renderMenu();<br>
+else if (state.mode === ‘study’) root.innerHTML = renderStudy();<br>
+else if (state.mode === ‘random’) root.innerHTML = renderRandom();<br>
+else if (state.mode === ‘wrong’) root.innerHTML = renderWrong();<br>
+else if (state.mode === ‘result’) root.innerHTML = renderResult();<br>
+}</p>
+<p>function renderMenu() {<br>
+return <code>     &lt;div class=&quot;menu&quot;&gt;       &lt;div class=&quot;menu-card&quot; onclick=&quot;startStudy()&quot;&gt;         &lt;div class=&quot;icon&quot;&gt;📖&lt;/div&gt;&lt;h3&gt;背题模式&lt;/h3&gt;         &lt;p&gt;按章节顺序浏览，点击显示答案&lt;/p&gt;       &lt;/div&gt;       &lt;div class=&quot;menu-card&quot; onclick=&quot;startRandom()&quot;&gt;         &lt;div class=&quot;icon&quot;&gt;🎲&lt;/div&gt;&lt;h3&gt;随机刷题&lt;/h3&gt;         &lt;p&gt;四选一选项，选后即时反馈&lt;/p&gt;       &lt;/div&gt;       &lt;div class=&quot;menu-card&quot; onclick=&quot;startWrong()&quot;&gt;         &lt;div class=&quot;icon&quot;&gt;❌&lt;/div&gt;         &lt;h3&gt;错题本 &lt;span class=&quot;wrong-count&quot;&gt;$&#123;state.wrongIds.length&#125;&lt;/span&gt;&lt;/h3&gt;         &lt;p&gt;复习所有标记过的错题&lt;/p&gt;       &lt;/div&gt;       &lt;div class=&quot;menu-card&quot; onclick=&quot;window.location.href='/'&quot;&gt;         &lt;div class=&quot;icon&quot;&gt;🏠&lt;/div&gt;&lt;h3&gt;返回博客&lt;/h3&gt;&lt;p&gt;回到首页&lt;/p&gt;       &lt;/div&gt;     &lt;/div&gt;</code>;<br>
+}</p>
+<p>function renderStudy() {<br>
+const q = state.filteredQ[state.currentIndex];<br>
+if (!q) return ‘<div class="empty-state"><div class="icon">✅</div><p>已浏览全部题目</p></div>’;<br>
+const total = state.filteredQ.length;<br>
+const pct = ((state.currentIndex+1)/total*100).toFixed(0);<br>
+const isWrong = state.wrongIds.includes(<a href="http://q.id">q.id</a>);<br>
+return <code>     &lt;button class=&quot;back-btn&quot; onclick=&quot;goMenu()&quot;&gt;← 返回主菜单&lt;/button&gt;     &lt;div class=&quot;week-selector&quot;&gt;       &lt;select onchange=&quot;changeWeek(this.value)&quot;&gt;         &lt;option value=&quot;all&quot; $&#123;state.studyWeek==='all'?'selected':''&#125;&gt;全部章节（$&#123;QUIZ_DATA.length&#125; 题）&lt;/option&gt;         $&#123;weeks.map(w=&gt;</code>&lt;option value=“${w}” <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>s</mi><mi>t</mi><mi>a</mi><mi>t</mi><mi>e</mi><mi mathvariant="normal">.</mi><mi>s</mi><mi>t</mi><mi>u</mi><mi>d</mi><mi>y</mi><mi>W</mi><mi>e</mi><mi>e</mi><mi>k</mi><mo>=</mo><mo>=</mo><mo>=</mo><mi>w</mi><msup><mo stretchy="false">?</mo><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mi>s</mi><mi>e</mi><mi>l</mi><mi>e</mi><mi>c</mi><mi>t</mi><mi>e</mi><msup><mi>d</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><msup><mo>:</mo><mrow><mo mathvariant="normal">′</mo><mo mathvariant="normal">′</mo></mrow></msup></mrow><mo>&gt;</mo></mrow><annotation encoding="application/x-tex">{state.studyWeek===w?&#x27;selected&#x27;:&#x27;&#x27;}&gt;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.946332em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="mord mathnormal">t</span><span class="mord mathnormal">a</span><span class="mord mathnormal">t</span><span class="mord mathnormal">e</span><span class="mord">.</span><span class="mord mathnormal">s</span><span class="mord mathnormal">t</span><span class="mord mathnormal">u</span><span class="mord mathnormal">d</span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="mord mathnormal">e</span><span class="mord mathnormal">e</span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mrel">=</span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mclose"><span class="mclose">?</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mord mathnormal">s</span><span class="mord mathnormal">e</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">e</span><span class="mord mathnormal">c</span><span class="mord mathnormal">t</span><span class="mord mathnormal">e</span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel"><span class="mrel">:</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span><span class="mord mtight">′</span></span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span></span></span></span>{w}（<span class='katex-error' title='ParseError: KaTeX parse error: Expected &#039;EOF&#039;, got &#039;}&#039; at position 63: …ion&gt;`).join(&#039;&#039;)}̲
+      &lt;/select…'>{QUIZ_DATA.filter(x=&gt;x.week===w).length}题）&lt;/option&gt;`).join(&#039;&#039;)}
+      &lt;/select&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;card&quot;&gt;
+      &lt;div class=&quot;progress&quot;&gt;
+        &lt;div class=&quot;progress-bar&quot;&gt;&lt;div class=&quot;progress-fill&quot; style=&quot;width:</span>{pct}%“&gt;</div></div><br>
+<span class="progress-text">${state.currentIndex+1} / <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>t</mi><mi>o</mi><mi>t</mi><mi>a</mi><mi>l</mi></mrow><mo>&lt;</mo><mi mathvariant="normal">/</mi><mi>s</mi><mi>p</mi><mi>a</mi><mi>n</mi><mo>&gt;</mo><mo>&lt;</mo><mi mathvariant="normal">/</mi><mi>d</mi><mi>i</mi><mi>v</mi><mo>&gt;</mo><mo>&lt;</mo><mi>d</mi><mi>i</mi><mi>v</mi><mi>c</mi><mi>l</mi><mi>a</mi><mi>s</mi><mi>s</mi><mo>=</mo><mi mathvariant="normal">&quot;</mi><mi>w</mi><mi>e</mi><mi>e</mi><mi>k</mi><mo>−</mo><mi>t</mi><mi>a</mi><mi>g</mi><mi mathvariant="normal">&quot;</mi><mo>&gt;</mo></mrow><annotation encoding="application/x-tex">{total}&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;week-tag&quot;&gt;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.73354em;vertical-align:-0.0391em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="mord mathnormal">o</span><span class="mord mathnormal">t</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">/</span><span class="mord mathnormal">s</span><span class="mord mathnormal">p</span><span class="mord mathnormal">a</span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">/</span><span class="mord mathnormal">d</span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal">d</span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mord mathnormal">c</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">a</span><span class="mord mathnormal">s</span><span class="mord mathnormal">s</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="mord">&quot;</span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mord mathnormal">e</span><span class="mord mathnormal">e</span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathnormal">t</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord">&quot;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span></span></span></span>{q.week}</div><br>
+<div class="question">${state.currentIndex+1}. ${q.question}</div><br>
+<div class="answer-area"><br>
+<div class="answer-box ${state.revealed?'answer-visible':'answer-blur'}"><br>
+<div class="answer-label">答案</div><br>
+<div class="answer-text"><span class="answer-letter"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>q</mi><mi mathvariant="normal">.</mi><mi>a</mi><mi>n</mi><mi>s</mi><mi>w</mi><mi>e</mi><msub><mi>r</mi><mi>l</mi></msub><mi>e</mi><mi>t</mi><mi>t</mi><mi>e</mi><mi>r</mi></mrow><mo>&lt;</mo><mi mathvariant="normal">/</mi><mi>s</mi><mi>p</mi><mi>a</mi><mi>n</mi><mo>&gt;</mo></mrow><annotation encoding="application/x-tex">{q.answer_letter}&lt;/span&gt;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.80952em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="mord">.</span><span class="mord mathnormal">a</span><span class="mord mathnormal">n</span><span class="mord mathnormal">s</span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mord mathnormal">e</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord mathnormal">e</span><span class="mord mathnormal">t</span><span class="mord mathnormal">t</span><span class="mord mathnormal">e</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">/</span><span class="mord mathnormal">s</span><span class="mord mathnormal">p</span><span class="mord mathnormal">a</span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span></span></span></span>{q.answer}</div><br>
+<div class="explanation">${q.explanation}</div><br>
+</div><br>
+${!state.revealed?‘<button class="reveal-btn" onclick="reveal()">点击显示答案</button>’:‘’}<br>
+</div><br>
+<div class="actions"><br>
+&lt;button class=“btn btn-ghost” onclick=“prevQ()” ${state.currentIndex===0?‘disabled’:‘’}&gt;← 上一题</button><br>
+<span class='katex-error' title='ParseError: KaTeX parse error: Expected &#039;}&#039;, got &#039;EOF&#039; at end of input: …k=&quot;toggleWrong('>{isWrong
+          ?`&lt;button class=&quot;btn btn-success&quot; onclick=&quot;toggleWrong(</span>{<a href="http://q.id">q.id</a>})”&gt;✓ 移出错题</button><code>           :</code><button class="btn btn-danger" onclick="toggleWrong(${q.id})">✗ 加入错题</button><code>&#125;         &lt;button class=&quot;btn btn-primary&quot; onclick=&quot;nextQ()&quot;&gt;下一题 →&lt;/button&gt;       &lt;/div&gt;     &lt;/div&gt;</code>;<br>
+}</p>
+<p>function renderRandom() {<br>
+if (state.finished) return renderResult();<br>
+const q = state.randomQ[state.currentIndex];<br>
+if (!q) return renderResult();<br>
+const total = state.randomQ.length;<br>
+const pct = (state.currentIndex/total*100).toFixed(0);<br>
+const opts = state.randomOpts;</p>
+<p>const optsHtml = opts.map((o, i) =&gt; {<br>
+let cls = ‘option’;<br>
+if (state.answered) {<br>
+if (o.isCorrect) cls += ’ correct’;<br>
+else if (state.selected === i) cls += ’ wrong’;<br>
+cls += ’ disabled’;<br>
+} else if (state.selected === i) {<br>
+cls += ’ selected’;<br>
+}<br>
+const checkContent = state.answered<br>
+? (o.isCorrect ? ‘’ : (state.selected===i ? ‘’ : ‘’))<br>
+: (state.selected===i ? ‘’ : ‘’);<br>
+return <code>&lt;div class=&quot;$&#123;cls&#125;&quot; onclick=&quot;selectOpt($&#123;i&#125;)&quot;&gt;       &lt;div class=&quot;opt-check&quot;&gt;&lt;/div&gt;       &lt;span class=&quot;opt-letter&quot;&gt;$&#123;o.displayLetter&#125;.&lt;/span&gt;       &lt;span class=&quot;opt-text&quot;&gt;$&#123;o.text&#125;&lt;/span&gt;     &lt;/div&gt;</code>;<br>
+}).join(‘’);</p>
+<p>const expHtml = state.answered<br>
+? <code>&lt;div class=&quot;explanation-box&quot;&gt;$&#123;q.explanation&#125;&lt;/div&gt;</code> : ‘’;</p>
+<p>const nextBtn = state.answered<br>
+? <code>&lt;div class=&quot;actions&quot; style=&quot;margin-top:16px&quot;&gt;         &lt;button class=&quot;btn btn-primary&quot; onclick=&quot;nextRandom()&quot;&gt;下一题 →&lt;/button&gt;        &lt;/div&gt;</code> : ‘’;</p>
+<p>return <code>     &lt;button class=&quot;back-btn&quot; onclick=&quot;goMenu()&quot;&gt;← 返回主菜单&lt;/button&gt;     &lt;div class=&quot;card&quot;&gt;       &lt;div class=&quot;progress&quot;&gt;         &lt;div class=&quot;progress-bar&quot;&gt;&lt;div class=&quot;progress-fill&quot; style=&quot;width:$&#123;pct&#125;%&quot;&gt;&lt;/div&gt;&lt;/div&gt;         &lt;span class=&quot;progress-text&quot;&gt;$&#123;state.currentIndex+1&#125; / $&#123;total&#125;&lt;/span&gt;       &lt;/div&gt;       &lt;div class=&quot;week-tag&quot;&gt;$&#123;q.week&#125;&lt;/div&gt;       &lt;div class=&quot;question&quot;&gt;$&#123;state.currentIndex+1&#125;. $&#123;q.question&#125;&lt;/div&gt;       &lt;div class=&quot;options&quot;&gt;$&#123;optsHtml&#125;&lt;/div&gt;       $&#123;expHtml&#125;       $&#123;nextBtn&#125;     &lt;/div&gt;</code>;<br>
+}</p>
+<p>function renderWrong() {<br>
+const wrongQs = QUIZ_DATA.filter(q =&gt; state.wrongIds.includes(<a href="http://q.id">q.id</a>));<br>
+if (!wrongQs.length) return <code>     &lt;button class=&quot;back-btn&quot; onclick=&quot;goMenu()&quot;&gt;← 返回主菜单&lt;/button&gt;     &lt;div class=&quot;empty-state&quot;&gt;&lt;div class=&quot;icon&quot;&gt;🎉&lt;/div&gt;&lt;p&gt;错题本是空的，继续加油！&lt;/p&gt;&lt;/div&gt;</code>;<br>
+return <code>     &lt;button class=&quot;back-btn&quot; onclick=&quot;goMenu()&quot;&gt;← 返回主菜单&lt;/button&gt;     &lt;p style=&quot;color:#64748b;font-size:.87rem;margin-bottom:14px&quot;&gt;共 $&#123;wrongQs.length&#125; 道错题&lt;/p&gt;     &lt;div class=&quot;wrong-list&quot;&gt;       $&#123;wrongQs.map(q=&gt;</code><br>
+<div class="wrong-item"><br>
+<div style="display:flex;justify-content:space-between;align-items:start;gap:8px"><br>
+<div class="wrong-q"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>q</mi><mi mathvariant="normal">.</mi><mi>q</mi><mi>u</mi><mi>e</mi><mi>s</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi></mrow><mo>&lt;</mo><mi mathvariant="normal">/</mi><mi>d</mi><mi>i</mi><mi>v</mi><mo>&gt;</mo><mo>&lt;</mo><mi>b</mi><mi>u</mi><mi>t</mi><mi>t</mi><mi>o</mi><mi>n</mi><mi>o</mi><mi>n</mi><mi>c</mi><mi>l</mi><mi>i</mi><mi>c</mi><mi>k</mi><mo>=</mo><mi mathvariant="normal">&quot;</mi><mi>r</mi><mi>e</mi><mi>m</mi><mi>o</mi><mi>v</mi><mi>e</mi><mi>W</mi><mi>r</mi><mi>o</mi><mi>n</mi><mi>g</mi><mo stretchy="false">(</mo></mrow><annotation encoding="application/x-tex">{q.question}&lt;/div&gt;
+            &lt;button onclick=&quot;removeWrong(</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.85396em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="mord">.</span><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="mord mathnormal">u</span><span class="mord mathnormal">e</span><span class="mord mathnormal">s</span><span class="mord mathnormal">t</span><span class="mord mathnormal">i</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">/</span><span class="mord mathnormal">d</span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal">b</span><span class="mord mathnormal">u</span><span class="mord mathnormal">t</span><span class="mord mathnormal">t</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span><span class="mord mathnormal">c</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">i</span><span class="mord mathnormal">c</span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">&quot;</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">e</span><span class="mord mathnormal">m</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mord mathnormal">e</span><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mopen">(</span></span></span></span>{<a href="http://q.id">q.id</a>});render()&quot; style=“background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#fca5a5;border-radius:6px;padding:3px 8px;cursor:pointer;font-size:.78rem;white-space:nowrap”&gt;移除</button><br>
+</div><br>
+<div class="wrong-a"><span class="answer-letter"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>q</mi><mi mathvariant="normal">.</mi><mi>a</mi><mi>n</mi><mi>s</mi><mi>w</mi><mi>e</mi><msub><mi>r</mi><mi>l</mi></msub><mi>e</mi><mi>t</mi><mi>t</mi><mi>e</mi><mi>r</mi></mrow><mo>&lt;</mo><mi mathvariant="normal">/</mi><mi>s</mi><mi>p</mi><mi>a</mi><mi>n</mi><mo>&gt;</mo></mrow><annotation encoding="application/x-tex">{q.answer_letter}&lt;/span&gt;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.80952em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="mord">.</span><span class="mord mathnormal">a</span><span class="mord mathnormal">n</span><span class="mord mathnormal">s</span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mord mathnormal">e</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord mathnormal">e</span><span class="mord mathnormal">t</span><span class="mord mathnormal">t</span><span class="mord mathnormal">e</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">/</span><span class="mord mathnormal">s</span><span class="mord mathnormal">p</span><span class="mord mathnormal">a</span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span></span></span></span>{q.answer}</div><br>
+<div class="wrong-exp"><span class='katex-error' title='ParseError: KaTeX parse error: Expected &#039;EOF&#039;, got &#039;#&#039; at position 68: …e:.76rem;color:#̲334155;margin-t…'>{q.explanation}&lt;/div&gt;
+          &lt;div style=&quot;font-size:.76rem;color:#334155;margin-top:6px&quot;&gt;</span>{q.week}</div><br>
+</div><code>).join('')&#125;     &lt;/div&gt;</code>;<br>
+}</p>
+<p>function renderResult() {<br>
+const total = state.score.correct + state.score.wrong;<br>
+const pct = total ? Math.round(state.score.correct/total*100) : 0;<br>
+const msg = pct&gt;=90?‘🎉 优秀！’:pct&gt;=70?‘👍 不错！’:pct&gt;=50?‘💪 继续加油！’:‘📚 需要多练习’;<br>
+return <code>     &lt;div class=&quot;result&quot;&gt;       &lt;div style=&quot;font-size:1.1rem;color:#64748b&quot;&gt;$&#123;msg&#125;&lt;/div&gt;       &lt;div class=&quot;result-score&quot;&gt;$&#123;pct&#125;%&lt;/div&gt;       &lt;div class=&quot;result-stats&quot;&gt;         &lt;div class=&quot;stat&quot;&gt;&lt;div class=&quot;stat-num&quot; style=&quot;color:#34d399&quot;&gt;$&#123;state.score.correct&#125;&lt;/div&gt;&lt;div class=&quot;stat-label&quot;&gt;答对&lt;/div&gt;&lt;/div&gt;         &lt;div class=&quot;stat&quot;&gt;&lt;div class=&quot;stat-num&quot; style=&quot;color:#ef4444&quot;&gt;$&#123;state.score.wrong&#125;&lt;/div&gt;&lt;div class=&quot;stat-label&quot;&gt;答错&lt;/div&gt;&lt;/div&gt;         &lt;div class=&quot;stat&quot;&gt;&lt;div class=&quot;stat-num&quot; style=&quot;color:#7dd3fc&quot;&gt;$&#123;total&#125;&lt;/div&gt;&lt;div class=&quot;stat-label&quot;&gt;总题数&lt;/div&gt;&lt;/div&gt;       &lt;/div&gt;       &lt;div class=&quot;actions&quot; style=&quot;justify-content:center;max-width:300px;margin:0 auto&quot;&gt;         &lt;button class=&quot;btn btn-primary&quot; onclick=&quot;startRandom()&quot;&gt;再来一轮&lt;/button&gt;         &lt;button class=&quot;btn btn-ghost&quot; onclick=&quot;goMenu()&quot;&gt;返回菜单&lt;/button&gt;       &lt;/div&gt;     &lt;/div&gt;</code>;<br>
+}</p>
+<p>// ===== 交互 =====<br>
+function goMenu(){ state.mode=‘menu’; render(); }</p>
+<p>function startStudy(){<br>
+state.mode=‘study’; state.studyWeek=‘all’;<br>
+state.filteredQ=[…QUIZ_DATA]; state.currentIndex=0; state.revealed=false; render();<br>
+}<br>
+function changeWeek(val){<br>
+state.studyWeek=val;<br>
+state.filteredQ=val===‘all’?[…QUIZ_DATA]:QUIZ_DATA.filter(q=&gt;q.week===val);<br>
+state.currentIndex=0; state.revealed=false; render();<br>
+}<br>
+function reveal(){ state.revealed=true; render(); }<br>
+function prevQ(){ if(state.currentIndex&gt;0){state.currentIndex–;state.revealed=false;render();} }<br>
+function nextQ(){ if(state.currentIndex&lt;state.filteredQ.length-1){state.currentIndex++;state.revealed=false;render();} }<br>
+function toggleWrong(id){ if(state.wrongIds.includes(id)) removeWrong(id); else addWrong(id); render(); }</p>
+<p>function startRandom(){<br>
+state.mode=‘random’;<br>
+state.randomQ=[…QUIZ_DATA].sort(()=&gt;Math.random()-.5);<br>
+state.currentIndex=0; state.selected=null; state.answered=false;<br>
+state.score={correct:0,wrong:0}; state.finished=false;<br>
+state.randomOpts=buildOptions(state.randomQ[0], QUIZ_DATA);<br>
+render();<br>
+}</p>
+<p>function selectOpt(i){<br>
+if(state.answered) return;<br>
+state.selected = i;<br>
+state.answered = true;<br>
+const isCorrect = state.randomOpts[i].isCorrect;<br>
+if(isCorrect) state.score.correct++;<br>
+else { state.score.wrong++; addWrong(state.randomQ[state.currentIndex].id); }<br>
+render();<br>
+}</p>
+<p>function nextRandom(){<br>
+if(state.currentIndex &lt; state.randomQ.length-1){<br>
+state.currentIndex++;<br>
+state.selected=null; state.answered=false;<br>
+state.randomOpts=buildOptions(state.randomQ[state.currentIndex], QUIZ_DATA);<br>
+render();<br>
+} else { state.finished=true; render(); }<br>
+}</p>
+<p>function startWrong(){ state.mode=‘wrong’; render(); }</p>
+<p>render();<br>
+</script></p>
 </body>
 </html>
