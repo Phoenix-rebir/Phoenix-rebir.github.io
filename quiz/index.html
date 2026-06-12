@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>刷题练习 - Tandy's Blog</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+.app{max-width:800px;margin:0 auto;padding:20px}
+h1{text-align:center;padding:24px 0 8px;font-size:1.6rem;color:#7dd3fc}
+.subtitle{text-align:center;color:#94a3b8;font-size:.9rem;margin-bottom:24px}
+<p>/* 主菜单 */<br>
+.menu{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}<br>
+.menu-card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;cursor:pointer;text-align:center;transition:all .2s}<br>
+.menu-card:hover{border-color:#7dd3fc;background:#1e3a5f}<br>
+.menu-card .icon{font-size:2.4rem;margin-bottom:10px}<br>
+.menu-card h3{font-size:1.1rem;color:#e2e8f0;margin-bottom:6px}<br>
+.menu-card p{font-size:.85rem;color:#94a3b8}<br>
+.wrong-count{background:#ef4444;color:#fff;font-size:.75rem;padding:2px 8px;border-radius:999px;margin-left:6px}</p>
+<p>/* 周次选择 */<br>
+.week-selector{margin-bottom:20px}<br>
+.week-selector select{width:100%;padding:10px 14px;background:#1e293b;border:1px solid #334155;border-radius:8px;color:#e2e8f0;font-size:.95rem;cursor:pointer}</p>
+<p>/* 题目卡片 */<br>
+.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:24px;margin-bottom:16px}<br>
+.progress{display:flex;align-items:center;gap:12px;margin-bottom:20px}<br>
+.progress-bar{flex:1;height:6px;background:#334155;border-radius:3px}<br>
+.progress-fill{height:100%;background:#7dd3fc;border-radius:3px;transition:width .3s}<br>
+.progress-text{font-size:.85rem;color:#94a3b8;white-space:nowrap}<br>
+.week-tag{display:inline-block;font-size:.78rem;color:#7dd3fc;background:#1e3a5f;padding:3px 10px;border-radius:999px;margin-bottom:14px}<br>
+.question{font-size:1.05rem;line-height:1.7;color:#e2e8f0;margin-bottom:20px}</p>
+<p>/* 答案区 */<br>
+.answer-area{position:relative}<br>
+.answer-blur{filter:blur(6px);user-select:none;transition:filter .3s}<br>
+.answer-visible{filter:none}<br>
+.answer-box{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:16px}<br>
+.answer-label{font-size:.8rem;color:#94a3b8;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}<br>
+.answer-text{font-size:1rem;color:#34d399;font-weight:500}<br>
+.answer-letter{display:inline-block;background:#064e3b;color:#34d399;border-radius:6px;padding:2px 10px;margin-right:8px;font-weight:700}<br>
+.explanation{margin-top:12px;font-size:.9rem;color:#94a3b8;line-height:1.6;border-top:1px solid #334155;padding-top:12px}</p>
+<p>/* 遮罩按钮 */<br>
+.reveal-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#3b82f6;color:#fff;border:none;padding:10px 24px;border-radius:8px;cursor:pointer;font-size:.95rem;z-index:10}<br>
+.reveal-btn:hover{background:#2563eb}</p>
+<p>/* 操作按钮 */<br>
+.actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}<br>
+.btn{padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-size:.9rem;font-weight:500;flex:1;min-width:100px}<br>
+.btn-primary{background:#3b82f6;color:#fff}<br>
+.btn-primary:hover{background:#2563eb}<br>
+.btn-success{background:#10b981;color:#fff}<br>
+.btn-success:hover{background:#059669}<br>
+.btn-danger{background:#ef4444;color:#fff}<br>
+.btn-danger:hover{background:#dc2626}<br>
+.btn-ghost{background:#334155;color:#e2e8f0}<br>
+.btn-ghost:hover{background:#475569}</p>
+<p>/* 背题模式 */<br>
+.study-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}<br>
+.study-nav span{font-size:.9rem;color:#94a3b8}</p>
+<p>/* 错题本 */<br>
+.wrong-list{display:flex;flex-direction:column;gap:12px}<br>
+.wrong-item{background:#1e293b;border:1px solid #7f1d1d;border-radius:10px;padding:16px}<br>
+.wrong-q{font-size:.95rem;color:#e2e8f0;margin-bottom:8px}<br>
+.wrong-a{font-size:.88rem;color:#34d399}<br>
+.wrong-exp{font-size:.83rem;color:#94a3b8;margin-top:6px}<br>
+.empty-state{text-align:center;padding:60px 20px;color:#475569}<br>
+.empty-state .icon{font-size:3rem;margin-bottom:12px}</p>
+<p>/* 结果页 */<br>
+.result{text-align:center;padding:40px 20px}<br>
+.result-score{font-size:3.5rem;font-weight:700;color:#7dd3fc;margin:16px 0}<br>
+.result-msg{font-size:1.1rem;color:#94a3b8;margin-bottom:24px}<br>
+.result-stats{display:flex;gap:20px;justify-content:center;margin-bottom:28px}<br>
+.stat{background:#0f172a;border-radius:10px;padding:14px 24px;text-align:center}<br>
+.stat-num{font-size:1.6rem;font-weight:700}<br>
+.stat-label{font-size:.8rem;color:#94a3b8}</p>
+<p>/* 顶部返回 */<br>
+.back-btn{display:flex;align-items:center;gap:6px;background:none;border:none;color:#94a3b8;cursor:pointer;font-size:.9rem;padding:4px 0;margin-bottom:16px}<br>
+.back-btn:hover{color:#e2e8f0}</p>
+<p>/* 随机模式答题 */<br>
+.options-mode .answer-box{cursor:pointer}<br>
+</style></p>
+</head>
+<body>
+<div class="app">
+  <h1 id="📚-刷题练习">📚 刷题练习</h1>
+  <p class="subtitle">共 269 道题 · 支持背题、随机刷题、错题本</p>
+  <div id="root"></div>
+</div>
+<script>
+// ========== 题库数据 ==========
+</script>
+<script src="questions.js"></script>
+<script>
+// ========== 状态管理 ==========
+const state = {
+  mode: 'menu',       // menu | study | random | wrong
+  currentIndex: 0,
+  revealed: false,
+  wrongIds: JSON.parse(localStorage.getItem('quiz_wrong') || '[]'),
+  studyWeek: 'all',
+  filteredQ: [],
+  randomQ: [],
+  score: { correct: 0, wrong: 0 },
+  finished: false,
+};
+
+const weeks = [...new Set(QUIZ_DATA.map(q => q.week))];
+
+function saveWrong() {
+  localStorage.setItem('quiz_wrong', JSON.stringify(state.wrongIds));
+}
+
+function addWrong(id) {
+  if (!state.wrongIds.includes(id)) { state.wrongIds.push(id); saveWrong(); }
+}
+
+function removeWrong(id) {
+  state.wrongIds = state.wrongIds.filter(x => x !== id); saveWrong();
+}
+
+// ========== 渲染函数 ==========
+function render() {
+  const root = document.getElementById('root');
+  if (state.mode === 'menu') root.innerHTML = renderMenu();
+  else if (state.mode === 'study') root.innerHTML = renderStudy();
+  else if (state.mode === 'random') root.innerHTML = renderRandom();
+  else if (state.mode === 'wrong') root.innerHTML = renderWrong();
+  else if (state.mode === 'result') root.innerHTML = renderResult();
+  bindEvents();
+}
+
+function renderMenu() {
+  return `
+    <div class="menu">
+      <div class="menu-card" onclick="startStudy()">
+        <div class="icon">📖</div>
+        <h3>背题模式</h3>
+        <p>按章节顺序浏览，点击显示答案</p>
+      </div>
+      <div class="menu-card" onclick="startRandom()">
+        <div class="icon">🎲</div>
+        <h3>随机刷题</h3>
+        <p>随机出题，标记对错，查看得分</p>
+      </div>
+      <div class="menu-card" onclick="startWrong()">
+        <div class="icon">❌</div>
+        <h3>错题本 <span class="wrong-count">${state.wrongIds.length}</span></h3>
+        <p>复习所有标记过的错题</p>
+      </div>
+      <div class="menu-card" onclick="window.location.href='/'">
+        <div class="icon">🏠</div>
+        <h3>返回博客</h3>
+        <p>回到首页</p>
+      </div>
+    </div>`;
+}
+
+function renderStudy() {
+  const q = state.filteredQ[state.currentIndex];
+  if (!q) return '<div class="empty-state"><div class="icon">✅</div><p>已浏览全部题目</p></div>';
+  const total = state.filteredQ.length;
+  const pct = ((state.currentIndex + 1) / total * 100).toFixed(0);
+  const isWrong = state.wrongIds.includes(q.id);
+
+  return `
+    <button class="back-btn" onclick="goMenu()">← 返回主菜单</button>
+    <div class="week-selector">
+      <select id="weekSelect" onchange="changeWeek(this.value)">
+        <option value="all" ${state.studyWeek==='all'?'selected':''}>全部章节（共 ${QUIZ_DATA.length} 题）</option>
+        ${weeks.map(w => `<option value="${w}" ${state.studyWeek===w?'selected':''}>${w}（${QUIZ_DATA.filter(q=>q.week===w).length}题）</option>`).join('')}
+      </select>
+    </div>
+    <div class="card">
+      <div class="progress">
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <span class="progress-text">${state.currentIndex+1} / ${total}</span>
+      </div>
+      <div class="week-tag">${q.week}</div>
+      <div class="question">${state.currentIndex+1}. ${q.question}</div>
+      <div class="answer-area">
+        <div class="answer-box ${state.revealed?'answer-visible':'answer-blur'}">
+          <div class="answer-label">答案</div>
+          <div class="answer-text"><span class="answer-letter">${q.answer_letter}</span>${q.answer}</div>
+          <div class="explanation">${q.explanation}</div>
+        </div>
+        ${!state.revealed ? '<button class="reveal-btn" onclick="reveal()">点击显示答案</button>' : ''}
+      </div>
+      <div class="actions">
+        <button class="btn btn-ghost" onclick="prevQ()" ${state.currentIndex===0?'disabled':''}>← 上一题</button>
+        ${isWrong
+          ? `<button class="btn btn-success" onclick="toggleWrong(${q.id})">✓ 移出错题</button>`
+          : `<button class="btn btn-danger" onclick="toggleWrong(${q.id})">✗ 加入错题</button>`}
+        <button class="btn btn-primary" onclick="nextQ()">下一题 →</button>
+      </div>
+    </div>`;
+}
+
+function renderRandom() {
+  if (state.finished) return renderResult();
+  const q = state.randomQ[state.currentIndex];
+  if (!q) return renderResult();
+  const total = state.randomQ.length;
+  const pct = (state.currentIndex / total * 100).toFixed(0);
+
+  return `
+    <button class="back-btn" onclick="goMenu()">← 返回主菜单</button>
+    <div class="card">
+      <div class="progress">
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <span class="progress-text">${state.currentIndex+1} / ${total}</span>
+      </div>
+      <div class="week-tag">${q.week}</div>
+      <div class="question">${state.currentIndex+1}. ${q.question}</div>
+      <div class="answer-area">
+        <div class="answer-box ${state.revealed?'answer-visible':'answer-blur'}">
+          <div class="answer-label">答案</div>
+          <div class="answer-text"><span class="answer-letter">${q.answer_letter}</span>${q.answer}</div>
+          <div class="explanation">${q.explanation}</div>
+        </div>
+        ${!state.revealed ? '<button class="reveal-btn" onclick="reveal()">点击显示答案</button>' : ''}
+      </div>
+      ${state.revealed ? `
+      <div class="actions">
+        <button class="btn btn-success" onclick="markCorrect()">✓ 答对了</button>
+        <button class="btn btn-danger" onclick="markWrong()">✗ 答错了</button>
+      </div>` : ''}
+    </div>`;
+}
+
+function renderWrong() {
+  const wrongQs = QUIZ_DATA.filter(q => state.wrongIds.includes(q.id));
+  if (wrongQs.length === 0) return `
+    <button class="back-btn" onclick="goMenu()">← 返回主菜单</button>
+    <div class="empty-state"><div class="icon">🎉</div><p>错题本是空的，继续加油！</p></div>`;
+
+  return `
+    <button class="back-btn" onclick="goMenu()">← 返回主菜单</button>
+    <p style="color:#94a3b8;font-size:.9rem;margin-bottom:14px">共 ${wrongQs.length} 道错题</p>
+    <div class="wrong-list">
+      ${wrongQs.map(q => `
+        <div class="wrong-item">
+          <div style="display:flex;justify-content:space-between;align-items:start;gap:8px">
+            <div class="wrong-q">${q.question}</div>
+            <button onclick="removeWrong(${q.id});render()" style="background:#7f1d1d;border:none;color:#fca5a5;border-radius:6px;padding:3px 8px;cursor:pointer;font-size:.8rem;white-space:nowrap">移除</button>
+          </div>
+          <div class="wrong-a"><span class="answer-letter">${q.answer_letter}</span>${q.answer}</div>
+          <div class="wrong-exp">${q.explanation}</div>
+          <div style="font-size:.78rem;color:#475569;margin-top:6px">${q.week}</div>
+        </div>`).join('')}
+    </div>`;
+}
+
+function renderResult() {
+  const total = state.score.correct + state.score.wrong;
+  const pct = total ? Math.round(state.score.correct / total * 100) : 0;
+  const msg = pct >= 90 ? '🎉 优秀！' : pct >= 70 ? '👍 不错！' : pct >= 50 ? '💪 继续加油！' : '📚 需要多练习';
+  return `
+    <div class="result">
+      <div style="font-size:1.2rem;color:#94a3b8">${msg}</div>
+      <div class="result-score">${pct}%</div>
+      <div class="result-stats">
+        <div class="stat"><div class="stat-num" style="color:#34d399">${state.score.correct}</div><div class="stat-label">答对</div></div>
+        <div class="stat"><div class="stat-num" style="color:#ef4444">${state.score.wrong}</div><div class="stat-label">答错</div></div>
+        <div class="stat"><div class="stat-num" style="color:#7dd3fc">${total}</div><div class="stat-label">总题数</div></div>
+      </div>
+      <div class="actions" style="justify-content:center;max-width:320px;margin:0 auto">
+        <button class="btn btn-primary" onclick="startRandom()">再来一轮</button>
+        <button class="btn btn-ghost" onclick="goMenu()">返回菜单</button>
+      </div>
+    </div>`;
+}
+
+// ========== 交互逻辑 ==========
+function bindEvents() {}
+
+function goMenu() { state.mode = 'menu'; render(); }
+
+function startStudy() {
+  state.mode = 'study';
+  state.studyWeek = 'all';
+  state.filteredQ = [...QUIZ_DATA];
+  state.currentIndex = 0;
+  state.revealed = false;
+  render();
+}
+
+function changeWeek(val) {
+  state.studyWeek = val;
+  state.filteredQ = val === 'all' ? [...QUIZ_DATA] : QUIZ_DATA.filter(q => q.week === val);
+  state.currentIndex = 0;
+  state.revealed = false;
+  render();
+}
+
+function startRandom() {
+  state.mode = 'random';
+  state.randomQ = [...QUIZ_DATA].sort(() => Math.random() - 0.5);
+  state.currentIndex = 0;
+  state.revealed = false;
+  state.score = { correct: 0, wrong: 0 };
+  state.finished = false;
+  render();
+}
+
+function startWrong() { state.mode = 'wrong'; render(); }
+
+function reveal() { state.revealed = true; render(); }
+
+function prevQ() {
+  if (state.currentIndex > 0) { state.currentIndex--; state.revealed = false; render(); }
+}
+
+function nextQ() {
+  if (state.currentIndex < state.filteredQ.length - 1) {
+    state.currentIndex++; state.revealed = false; render();
+  }
+}
+
+function toggleWrong(id) {
+  if (state.wrongIds.includes(id)) removeWrong(id); else addWrong(id);
+  render();
+}
+
+function markCorrect() {
+  state.score.correct++;
+  if (state.currentIndex < state.randomQ.length - 1) {
+    state.currentIndex++; state.revealed = false;
+  } else { state.finished = true; }
+  render();
+}
+
+function markWrong() {
+  addWrong(state.randomQ[state.currentIndex].id);
+  state.score.wrong++;
+  if (state.currentIndex < state.randomQ.length - 1) {
+    state.currentIndex++; state.revealed = false;
+  } else { state.finished = true; }
+  render();
+}
+
+// 初始化
+render();
+</script>
+</body>
+</html>
