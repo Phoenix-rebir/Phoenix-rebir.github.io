@@ -186,6 +186,21 @@ h1{font-size:2.2rem;font-weight:700;line-height:1.2;margin-bottom:12px;
 
 .back-btn{display:flex;align-items:center;gap:6px;background:none;border:none;color:#64748b;cursor:pointer;font-size:.88rem;padding:4px 0;margin-bottom:14px}
 .back-btn:hover{color:#e2e8f0}
+
+/* 题目索引面板 */
+.quiz-layout{display:flex;gap:14px;align-items:flex-start}
+.quiz-main{flex:1;min-width:0}
+.idx-panel{width:130px;flex-shrink:0;background:rgba(255,255,255,.04);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px;position:sticky;top:20px}
+.idx-title{font-size:.68rem;color:#475569;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;text-align:center}
+.idx-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;max-height:70vh;overflow-y:auto}
+.idx-grid::-webkit-scrollbar{width:3px}
+.idx-grid::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:2px}
+.ib{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:.65rem;border-radius:4px;cursor:pointer;border:none;background:rgba(255,255,255,.05);color:#475569;transition:all .15s;padding:0;width:100%}
+.ib:hover{background:rgba(255,255,255,.12);color:#e2e8f0}
+.ib.cur{background:rgba(99,102,241,.8);color:#fff;box-shadow:0 0 8px rgba(99,102,241,.5)}
+.ib.ok{background:rgba(52,211,153,.55);color:#fff}
+.ib.err{background:rgba(239,68,68,.55);color:#fff}
+.ib.mark{background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3)}
 </style>
 </head>
 <body>
@@ -202,13 +217,15 @@ const state = {
   mode: 'menu',
   currentIndex: 0,
   revealed: false,
-  selected: null,       // 随机模式选中的选项索引
-  answered: false,      // 随机模式是否已作答
+  selected: null,
+  answered: false,
   wrongIds: JSON.parse(localStorage.getItem('quiz_wrong') || '[]'),
   studyWeek: 'all',
   filteredQ: [],
   randomQ: [],
-  randomOpts: [],       // 当前题的选项列表 [{letter,text,isCorrect}]
+  randomOpts: [],
+  allOpts: [],
+  randomResults: [],
   score: { correct: 0, wrong: 0 },
   finished: false,
 };
@@ -286,6 +303,7 @@ function renderStudy() {
   const total = state.filteredQ.length;
   const pct = ((state.currentIndex+1)/total*100).toFixed(0);
   const isWrong = state.wrongIds.includes(q.id);
+  const indexPanel = renderIndexPanel(state.filteredQ, state.currentIndex, null, 'study');
   return `
     <button class="back-btn" onclick="goMenu()">← 返回主菜单</button>
     <div class="week-selector">
@@ -294,29 +312,35 @@ function renderStudy() {
         ${weeks.map(w=>`<option value="${w}" ${state.studyWeek===w?'selected':''}>${w}（${QUIZ_DATA.filter(x=>x.week===w).length}题）</option>`).join('')}
       </select>
     </div>
-    <div class="card">
-      <div class="progress">
-        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-        <span class="progress-text">${state.currentIndex+1} / ${total}</span>
-      </div>
-      <div class="week-tag">${q.week}</div>
-      <div class="question">${state.currentIndex+1}. ${q.question}</div>
-      <div class="answer-area">
-        <div class="answer-box ${state.revealed?'answer-visible':'answer-blur'}">
-          <div class="answer-label">答案</div>
-          <div class="answer-text"><span class="answer-letter">${q.answer_letter}</span>${q.answer}</div>
-          <div class="explanation">${q.explanation}</div>
+    <div class="quiz-layout">
+      <div class="quiz-main">
+        <div class="card">
+          <div class="progress">
+            <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+            <span class="progress-text">${state.currentIndex+1} / ${total}</span>
+          </div>
+          <div class="week-tag">${q.week}</div>
+          <div class="question">${state.currentIndex+1}. ${q.question}</div>
+          <div class="answer-area">
+            <div class="answer-box ${state.revealed?'answer-visible':'answer-blur'}">
+              <div class="answer-label">答案</div>
+              <div class="answer-text"><span class="answer-letter">${q.answer_letter}</span>${q.answer}</div>
+              <div class="explanation">${q.explanation}</div>
+            </div>
+            ${!state.revealed?'<button class="reveal-btn" onclick="reveal()">点击显示答案</button>':''}
+          </div>
+          <div class="actions">
+            <button class="btn btn-ghost" onclick="prevQ()" ${state.currentIndex===0?'disabled':''}>← 上一题</button>
+            ${isWrong
+              ?`<button class="btn btn-success" onclick="toggleWrong(${q.id})">✓ 移出错题</button>`
+              :`<button class="btn btn-danger" onclick="toggleWrong(${q.id})">✗ 加入错题</button>`}
+            <button class="btn btn-primary" onclick="nextQ()">下一题 →</button>
+          </div>
         </div>
-        ${!state.revealed?'<button class="reveal-btn" onclick="reveal()">点击显示答案</button>':''}
       </div>
-      <div class="actions">
-        <button class="btn btn-ghost" onclick="prevQ()" ${state.currentIndex===0?'disabled':''}>← 上一题</button>
-        ${isWrong
-          ?`<button class="btn btn-success" onclick="toggleWrong(${q.id})">✓ 移出错题</button>`
-          :`<button class="btn btn-danger" onclick="toggleWrong(${q.id})">✗ 加入错题</button>`}
-        <button class="btn btn-primary" onclick="nextQ()">下一题 →</button>
-      </div>
+      ${indexPanel}
     </div>`;
+}
 }
 
 function renderRandom() {
@@ -326,47 +350,36 @@ function renderRandom() {
   const total = state.randomQ.length;
   const pct = (state.currentIndex/total*100).toFixed(0);
   const opts = state.randomOpts;
-
   const optsHtml = opts.map((o, i) => {
     let cls = 'option';
     if (state.answered) {
       if (o.isCorrect) cls += ' correct';
       else if (state.selected === i) cls += ' wrong';
       cls += ' disabled';
-    } else if (state.selected === i) {
-      cls += ' selected';
-    }
-    const checkContent = state.answered
-      ? (o.isCorrect ? '' : (state.selected===i ? '' : ''))
-      : (state.selected===i ? '' : '');
-    return `<div class="${cls}" onclick="selectOpt(${i})">
-      <div class="opt-check"></div>
-      <span class="opt-letter">${o.displayLetter}.</span>
-      <span class="opt-text">${o.text}</span>
-    </div>`;
+    } else if (state.selected === i) cls += ' selected';
+    return `<div class="${cls}" onclick="selectOpt(${i})"><div class="opt-check"></div><span class="opt-letter">${o.displayLetter}.</span><span class="opt-text">${o.text}</span></div>`;
   }).join('');
-
-  const expHtml = state.answered
-    ? `<div class="explanation-box">${q.explanation}</div>` : '';
-
-  const nextBtn = state.answered
-    ? `<div class="actions" style="margin-top:16px">
-        <button class="btn btn-primary" onclick="nextRandom()">下一题 →</button>
-       </div>` : '';
-
+  const expHtml = state.answered ? `<div class="explanation-box">${q.explanation}</div>` : '';
+  const nextBtn = state.answered ? `<div class="actions" style="margin-top:16px"><button class="btn btn-primary" onclick="nextRandom()">下一题 →</button></div>` : '';
+  const indexPanel = renderIndexPanel(state.randomQ, state.currentIndex, state.randomResults, 'random');
   return `
     <button class="back-btn" onclick="goMenu()">← 返回主菜单</button>
-    <div class="card">
-      <div class="progress">
-        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-        <span class="progress-text">${state.currentIndex+1} / ${total}</span>
+    <div class="quiz-layout">
+      <div class="quiz-main">
+        <div class="card">
+          <div class="progress">
+            <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+            <span class="progress-text">${state.currentIndex+1} / ${total}</span>
+          </div>
+          <div class="week-tag">${q.week}</div>
+          <div class="question">${state.currentIndex+1}. ${q.question}</div>
+          <div class="options">${optsHtml}</div>
+          ${expHtml}${nextBtn}
+        </div>
       </div>
-      <div class="week-tag">${q.week}</div>
-      <div class="question">${state.currentIndex+1}. ${q.question}</div>
-      <div class="options">${optsHtml}</div>
-      ${expHtml}
-      ${nextBtn}
+      ${indexPanel}
     </div>`;
+}
 }
 
 function renderWrong() {
@@ -431,9 +444,11 @@ function toggleWrong(id){ if(state.wrongIds.includes(id)) removeWrong(id); else 
 function startRandom(){
   state.mode='random';
   state.randomQ=[...QUIZ_DATA].sort(()=>Math.random()-.5);
+  state.allOpts=state.randomQ.map(q=>buildOptions(q,QUIZ_DATA));
+  state.randomResults=new Array(state.randomQ.length).fill(null);
   state.currentIndex=0; state.selected=null; state.answered=false;
   state.score={correct:0,wrong:0}; state.finished=false;
-  state.randomOpts=buildOptions(state.randomQ[0], QUIZ_DATA);
+  state.randomOpts=state.allOpts[0];
   render();
 }
 
@@ -442,6 +457,7 @@ function selectOpt(i){
   state.selected = i;
   state.answered = true;
   const isCorrect = state.randomOpts[i].isCorrect;
+  state.randomResults[state.currentIndex] = isCorrect ? 'ok' : 'err';
   if(isCorrect) state.score.correct++;
   else { state.score.wrong++; addWrong(state.randomQ[state.currentIndex].id); }
   render();
@@ -451,12 +467,35 @@ function nextRandom(){
   if(state.currentIndex < state.randomQ.length-1){
     state.currentIndex++;
     state.selected=null; state.answered=false;
-    state.randomOpts=buildOptions(state.randomQ[state.currentIndex], QUIZ_DATA);
+    state.randomOpts=state.allOpts[state.currentIndex];
     render();
   } else { state.finished=true; render(); }
 }
 
 function startWrong(){ state.mode='wrong'; render(); }
+
+function renderIndexPanel(questions, currentIdx, results, mode) {
+  const items = questions.map((q, i) => {
+    let cls = 'ib';
+    if (i === currentIdx) cls += ' cur';
+    else if (mode === 'random' && results && results[i]) cls += ' ' + results[i];
+    else if (mode === 'study' && state.wrongIds.includes(q.id)) cls += ' mark';
+    return `<button class="${cls}" onclick="jumpTo(${i})">${i+1}</button>`;
+  }).join('');
+  return `<div class="idx-panel"><div class="idx-title">题目索引</div><div class="idx-grid">${items}</div></div>`;
+}
+
+function jumpTo(i) {
+  state.currentIndex = i;
+  state.revealed = false;
+  if (state.mode === 'random') {
+    const res = state.randomResults[i];
+    state.answered = res !== null;
+    state.selected = null;
+    state.randomOpts = state.allOpts[i];
+  }
+  render();
+}
 
 render();
 </script>
